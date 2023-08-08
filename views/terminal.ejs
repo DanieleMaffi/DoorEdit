@@ -102,7 +102,8 @@
                         <label for="id" class="form-label">Codice identificativo</label>
                         <input type="text" placeholder="<%=terminal.id%>" value="<%=terminal.id%>" class="form-control" id="id" name="id">
                     </div>
-                    <button type="submit" class="btn btn-primary topdownslower-animation">Aggiorna</button>
+                    <button type="submit" class="btn btn-primary">Aggiorna</button>
+                    <a class="btn btn-danger ml-3" href="/terminals/<%=terminal.sqlId%>/delete"><i class="fa fa-trash"></i></a>
                 </form>
             </div>
         </div>
