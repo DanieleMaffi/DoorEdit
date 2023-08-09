@@ -9,11 +9,6 @@ router.get('/', (req, res) => {     //when the home page is requested the login 
 
 router.get('/home', authController.isLoggedIn, pages.loadHome)
 
-router.get('/terminals/add', authController.isLoggedIn, pages.loadNewTerminal) 
-router.get('/terminals/:id', authController.isLoggedIn, pages.loadTerminal) 
-router.post('/terminals/:id/update', authController.isLoggedIn, pages.updateTerminal)
-router.post('/terminals/add/submit', authController.isLoggedIn, pages.addTerminal)
-
 router.get('/anagraphic', authController.isLoggedIn, pages.loadAnagraphic)
 
 router.get('*', (req, res) => {res.status(404).render('notfound')})

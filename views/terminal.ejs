@@ -103,10 +103,18 @@
                         <input type="text" placeholder="<%=terminal.id%>" value="<%=terminal.id%>" class="form-control" id="id" name="id">
                     </div>
                     <button type="submit" class="btn btn-primary">Aggiorna</button>
-                    <a class="btn btn-danger ml-3" href="/terminals/<%=terminal.sqlId%>/delete"><i class="fa fa-trash"></i></a>
+                    <a class="btn btn-danger ml-3" id="delete" href="#"><i class="fa fa-trash"></i></a>
                 </form>
             </div>
         </div>
+        <script>
+            //When the delete btn is pressed, shows a confirmation dialog and if the user click 'OK', the terminal will be deleted.
+            let deleteBtn = document.getElementById("delete")
+            deleteBtn.addEventListener('click', () => {
+                if(confirm("Sei sicuro di voler eliminare questo terminale?"))
+                    window.location.href = "/terminals/<%=terminal.sqlId%>/delete"
+            })
+        </script>
         <script src="/js/jquery.min.js"></script>
         <script src="/js/popper.js"></script>
         <script src="/js/bootstrap.min.js"></script>
