@@ -1,7 +1,7 @@
 {
-  "name": "my_sql",
+  "name": "door_edit",
   "version": "1.0.0",
-  "description": "This app is supposed to be easily accessible by all the employees of the company, either by pc or phone through the wifi network. <br>\r The whole purpose of this app is to provide a **simple UI** that can be used to create orders for the maintenance department wothout going there physically.",
+  "description": "This app is supposed to be easily accessible by all the employees of the company, either by pc or phone through the wifi network. <br>\r The whole purpose of this app is to provide a **simple UI** that can be used to easily change the configuration of the terminals.",
   "main": "app.js",
   "scripts": {
     "start": "nodemon app.js"
