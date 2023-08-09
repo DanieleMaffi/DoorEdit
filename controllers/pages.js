@@ -62,3 +62,27 @@ exports.loadAnagraphic = async (req, res) => {
     }
     catch (err) { console.log(err) }
 }
+
+exports.loadTransits = async (req, res) => {
+    await sql.connect(config)
+    let query = "SELECT CONVERT(VARCHAR, data, 105) as Data, CONVERT(VARCHAR, data, 108) as Time, Nome, Cognome, Badge, Terminale, Esito FROM tb_transiti ORDER BY Data DESC"
+
+    let decodedToken = await promisify(jwt.verify)(req.cookies['token'], process.env.JWT_SECRET);
+
+    try {
+        sql.query(query, (err, result) => {
+            if(err) console.log(err)
+    
+            res.status(200).render("transits", {
+                user: decodedToken['user'],
+                terminals: decodedToken['terminals'],
+                transits: result.recordset
+            })
+    
+            sql.close()
+                .then(() => { console.log("Connection closed") })
+                .catch((err) => { console.log(err) })
+        })
+    }
+    catch (err) { console.log(err) }
+}

@@ -11,6 +11,8 @@ router.get('/home', authController.isLoggedIn, pagesController.loadHome)
 
 router.get('/anagraphic', authController.isLoggedIn, pagesController.loadAnagraphic)
 
+router.get('/transits', authController.isLoggedIn, pagesController.loadTransits)
+
 router.get('*', (req, res) => {res.status(404).render('notfound')})
 
 module.exports = router;

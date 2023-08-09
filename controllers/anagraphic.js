@@ -11,7 +11,7 @@ exports.loadUpdateAnagraphic = async (req, res) => {
     try {
         const pool = await sql.connect(config)
         let request = pool.request().input('id', sql.BigInt, id)
-        request.query("SELECT * FROM tb_cfg_anagrafica WHERE rowid = @id", (err, result) => {
+        request.query("SELECT * FROM tb_cfg_anagrafica WHERE rowid = @id ORDER BY cognome DESC", (err, result) => {
             if (err) { console.log(err) }
 
             pool.close()

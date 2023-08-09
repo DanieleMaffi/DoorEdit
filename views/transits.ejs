@@ -13,11 +13,10 @@
 </head>
 
 <body>
-
     <a class="circle-wrap" href="#">
         <i class="fa fa-arrow-up"></i>
     </a>
-
+    
     <div class="wrapper d-flex align-items-stretch">
         <nav id="sidebar">
             <div class="custom-menu">
@@ -92,60 +91,32 @@
             <table class="table table-hover table-dark">
                 <thead>
                     <tr>
-                        <th scope="col">#</th>
+                        <th scope="col">Data</th>
+                        <th scope="col">Badge</th>
                         <th scope="col">Nome</th>
                         <th scope="col">Cognome</th>
-                        <th scope="col">Abilitato</th>
-                        <th scope="col">Badge timbrature</th>
-                        <th scope="col">Badge accessi</th>
-                        <th scope="col">Badge Aggiuntivo</th>
-                        <th scope="col" >Opzioni</th>
+                        <th scope="col">Terminale</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <% for (let i = 0; i < anagraphic.length; i++) { %>
-                        <tr>
-                            <th class="align-middle" scope="row"><%=anagraphic[i].rowID%></th>
-                            <td class="align-middle"><%=anagraphic[i].Nome%></td>
-                            <td class="align-middle"><%=anagraphic[i].Cognome%></td>
-                            <% if (anagraphic[i].Abilitato) { %>
-                                <td class="align-middle">Si</td>
-                            <% } else { %>
-                                <td class="align-middle">No</td>
-                            <% } %>
-                            <td class="align-middle"><%=anagraphic[i].Badge_Timbrature%></td>
-                            <td class="align-middle"><%=anagraphic[i].Badge_Accessi%></td>
-                            <td class="align-middle"><%=anagraphic[i].Badge_Aggiuntivo%></td>
-                            <td class="align-middle">
-                                <button style="cursor: pointer;" class="mr-3 btn btn-secondary" onclick="editElement(<%=anagraphic[i].rowID%>)">
-                                    <i class="fa fa-pencil"></i>
-                                </button>
-                                <button style="cursor: pointer;" class="btn btn-danger" onclick="deleteElement(<%=anagraphic[i].rowID%>)">
-                                    <i class="fa fa-trash"></i>
-                                </button>
-                            </td>
+                    <% for (let i = 0; i < transits.length; i++) { %>
+                        <% if (transits[i].Esito)  { %>
+                            <tr>
+                        <% } else { %>
+                            <tr class="bg-danger">
+                        <% } %>
+                            <th class="align-middle" scope="row"><%=transits[i].Data%> &emsp; - &emsp; <%=transits[i].Time%></th>
+                            <td class="align-middle"><%=transits[i].Badge%></td>
+                            <td class="align-middle"><%=transits[i].Nome%></td>
+                            <td class="align-middle"><%=transits[i].Cognome%></td>
+                            <td class="align-middle"><%=transits[i].Terminale%></td>
                         </tr>
                     <% } %>
-                    <tr>
-                        <td colspan="10">
-                            <a style="display: flex; justify-content: center;" href="/anagraphic/add">Aggiungi un elemento</a>
-                        </td>
-                    </tr>
                 </tbody>
             </table>
         </div>
         </div>
     </div>
-    <script>
-        function editElement(rowID) {
-            window.location.href = "/anagraphic/" + rowID + "/update"
-        }
-
-        function deleteElement(rowID) {
-            if (confirm('Sei sicuro di voler eliminare questo elemento?'))
-                window.location.href = "/anagraphic/" + rowID + "/delete"
-        }
-    </script>
     <script src="js/jquery.min.js"></script>
     <script src="js/popper.js"></script>
     <script src="js/bootstrap.min.js"></script>
