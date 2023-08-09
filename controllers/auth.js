@@ -6,16 +6,7 @@ const jwt = require('jsonwebtoken');
 let password = "";
 
 //Database configuration file
-var config = {
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    server: process.env.DB_SERVER,
-    database: process.env.DB,
-    options: {
-        encrypt: false,
-        trustServerCertificate: false
-    }
-};
+const config = require('./config.js');
 
 //This function is called from the /auth/login post request and handles the login process
 exports.login = async (req, res) => {
@@ -67,7 +58,6 @@ exports.login = async (req, res) => {
 
                 //Creating the paylod to place in the token
                 let payload = {
-                    id: results.recordset[0]?.ID,
                     user: results.recordset[0]?.Username,
                 }
 
@@ -78,12 +68,14 @@ exports.login = async (req, res) => {
                 //PLacing the token in the cookies
                 res.cookie('token', token, { path: '/' })
 
-                //Redirecting to home
-                res.status(201).redirect('/home');
-
                 pool.close()
                     .then(() => { console.log('Closed pool') })
                     .catch((err) => { console.log(err) })
+
+                //Redirecting to home
+                res.status(201).redirect('/home');
+
+                
             }
         })
     } catch (err) { }
@@ -124,7 +116,6 @@ exports.changePassword = async (req, res) => {
         return res.status(400).render('passwordForm', {
             message: 'Le password devono coincidere',
             user: decodedToken['user'],
-            id: decodedToken['id'],
             terminals: decodedToken['terminals']
         })
     }
