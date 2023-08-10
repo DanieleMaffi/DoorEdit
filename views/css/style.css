@@ -12131,6 +12131,62 @@ input:checked + .slider:before {
   font-size: 25px;
 }
 
+.popup {
+  animation: backInLeft 1.2s;
+  visibility: hidden;
+  position: absolute;
+  top: 30%;
+  right: 35%;
+  display: flex;
+  align-items: center;
+  justify-self: center;
+  z-index: 100;
+}
+
+.show {
+  visibility: visible;
+}
+
+@keyframes backInLeft {
+  0% {
+    transform: translateX(-2000px) scale(0.7);
+    opacity: 0.8;
+  }
+
+  80% {
+    transform: translateX(0px) scale(0.7);
+    opacity: 0.8;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.blur {
+  transition: 0.2s;
+  filter: blur(30px);
+  pointer-events: none;
+  user-select: none;
+}
+
+.unblur {
+  transition: 0.2s;
+  filter: blur(0); /* Removes the blur effect */
+}
+
+.popup .icon {
+  position: absolute;
+  top: 20px;
+  right: 17px;
+  cursor: pointer;
+}
+
+.popup .icon:hover {
+  color: #ddd;
+}
+
 @media screen and (max-width:1400px) {
 
   /* smartphones, Android phones, landscape iPhone, iPad and small PCs */

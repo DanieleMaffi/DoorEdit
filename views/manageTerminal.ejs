@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en" data-bs-theme="light">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="images/x-icon" href="/src/minilogo.png" />
+    <link href="../../src/fonts.googleapis.com_css_family=Poppins_300,400,500,600,700,800,900.css" rel="stylesheet">
+    <link rel="stylesheet" href="../../src/stackpath.bootstrapcdn.com_font-awesome_4.7.0_css_font-awesome.min.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <title>Anagrafica</title>
+</head>
+
+<body>
+    <div id="modal" class="popup card form-card">
+
+        <svg onclick="showForm()" class="icon" width="35" height="35" fill="currentColor" viewBox="0 0 16 16">
+            <path fill-rule="evenodd"
+                d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2z" />
+            <path fill-rule="evenodd"
+                d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z" />
+        </svg>
+
+        <h3 class="mt-5 mb-4 pt-1">Autorizza</h3>
+        <form action="/terminals/<%=id%>/manage/add" method="POST" id="usrform" enctype="multipart/form-data" e>
+            <div class=" mt-1">
+                <label for="person" class="form-label">Opzioni</label>
+                <select class="form-control mb-5" name="person">
+                    <option value="none" selected disabled hidden>
+                        Seleziona una persona
+                    </option>
+                    <% for (var i=0; i < anagraphic.length; i++) { %>
+                        <option value="<%=anagraphic[i].rowID%>">
+                            <%=anagraphic[i].Nome%>
+                                <%=anagraphic[i].Cognome%>
+                        </option>
+                        <% } %>
+                </select>
+                <button onclick="showForm()" type="submit" class="btn btn-primary mb-5">Autorizza</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="wrapper d-flex align-items-stretch unblur" id="blur">
+        <a class="circle-wrap" href="#">
+            <i class="fa fa-arrow-up"></i>
+        </a>
+        <nav id="sidebar">
+            <div class="custom-menu">
+                <button type="button" id="sidebarCollapse" class="btn btn-primary">
+                    <i class="fa fa-bars"></i>
+                    <span class="sr-only">Toggle Menu</span>
+                </button>
+            </div>
+            <div class="p-4 pt-5">
+                <h1><a href="/" class="logo">DoorEdit</a></h1>
+
+                <p class="mb-0">
+                    <%= user %> &emsp; - &emsp; <a href="/auth/logout">Log out</a>
+                </p>
+                <a href="/auth/changePassword">Cambia Password</a>
+
+                <ul class="list-unstyled components mb-5 mt-5">
+                    <li>
+                        <a href="/home">Home</a>
+                    </li>
+                    <li>
+                        <a href="/anagraphic">Anagrafica</a>
+                    </li>
+                    <li>
+                        <a href="#terminalsSubmenu" data-toggle="collapse" aria-expanded="false"
+                            class="dropdown-toggle">Terminali</a>
+                        <ul class="collapse list-unstyled" id="terminalsSubmenu">
+                            <% for(let i=0; i < terminals.length; i++) { %>
+                                <% if (terminals[i].Stato) { %>
+                                    <li>
+                                        <a href="/terminals/<%=terminals[i].rowID%>" style="color: rgb(137, 227, 137);">
+                                            <%=terminals[i].Nome_Terminale%>
+                                                <%=terminals[i].ID_Terminale%>
+                                        </a>
+                                    </li>
+                                    <% } else { %>
+                                        <li>
+                                            <a href="/terminals/<%=terminals[i].rowID%>"
+                                                style="color: rgb(240, 88, 116);">
+                                                <%=terminals[i].Nome_Terminale%>
+                                                    <%=terminals[i].ID_Terminale%>
+                                            </a>
+                                        </li>
+                                        <% } %>
+                                            <% } %>
+                                                <li>
+                                                    <a href="/terminals/add">Aggiungi un terminale</a>
+                                                </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="/transits">Transiti</a>
+                    </li>
+                </ul>
+                <div class="footer">
+                    <p>
+                        Copyright &copy;
+                        <script>document.write(new Date().getFullYear());</script> All rights reserved | <a
+                            href="http://www.fonderiaditorbole.com/it/" target="_blank">FDT</a>
+                    </p>
+                </div>
+
+            </div>
+        </nav>
+
+        <!-- Page Content  -->
+        <div id="content" class="p-4 p-md-5 pt-5">
+
+            <h1 class="mt-3">Anagrafica</h1>
+            <h5 class="mb-5">Qui puoi aggiungere, modificare ed eliminare elementi dall'anagrafica.</h5>
+            <div class="table-responsive">
+                <table class="table table-hover table-dark">
+                    <thead>
+                        <tr>
+                            <th scope="col">Nome</th>
+                            <th scope="col">Cognome</th>
+                            <th scope="col">Badge timbrature</th>
+                            <th scope="col">Badge accessi</th>
+                            <th scope="col">Badge Aggiuntivo</th>
+                            <th scope="col">Eliminazione</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% for (let i=0; i < authorizations.length; i++) { %>
+                            <tr>
+                                <td class="align-middle">
+                                    <%=authorizations[i].Nome%>
+                                </td>
+                                <td class="align-middle">
+                                    <%=authorizations[i].Cognome%>
+                                </td>
+                                <td class="align-middle">
+                                    <%=authorizations[i].Badge_Timbrature%>
+                                </td>
+                                <td class="align-middle">
+                                    <%=authorizations[i].Badge_Accessi%>
+                                </td>
+                                <td class="align-middle">
+                                    <%=authorizations[i].Badge_Aggiuntivo%>
+                                </td>
+                                <td class="align-middle">
+                                    <button style="cursor: pointer;" class="btn btn-danger"
+                                        onclick="deleteElement(<%=authorizations[i].ID_Anagrafica%>, '<%= authorizations[i].Cognome %>')">
+                                        <i class="fa fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <% } %>
+                                <tr>
+                                    <td colspan="10">
+                                        <a style="display: flex; justify-content: center;" href="#"
+                                            onclick="showForm()">Inserisci autorizzazione</a>
+                                    </td>
+                                </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script>
+        function deleteElement(personId, person) {
+            if (confirm(`Sei sicuro di voler togliere l'autorizzazione a ${person}?`))
+                window.location.href = "/terminals/" + <%=id %> + "/manage/delete/" + personId
+        }
+
+        function showForm() {
+            let modal = document.getElementById("modal")
+            let blur = document.getElementById("blur")
+
+            modal.classList.toggle("show")
+            blur.classList.toggle("blur")
+            blur.classList.toggle("unblur")
+        }
+    </script>
+    <script src="../../js/jquery.min.js"></script>
+    <script src="../../js/popper.js"></script>
+    <script src="../../js/bootstrap.min.js"></script>
+    <script src="../../js/main.js"></script>
+
+</body>
+
+</html>

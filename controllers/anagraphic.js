@@ -27,6 +27,9 @@ exports.loadUpdateAnagraphic = async (req, res) => {
 
         request.query("SELECT * FROM tb_cfg_anagrafica WHERE rowid = @id ORDER BY cognome DESC", (err, result) => {
             if (err) { console.log(err) }
+            
+            if (result.rowsAffected == 0)
+                res.status(404).render("notfound")
 
             pool.close()
                 .catch((err) => { console.log(err) })
@@ -129,6 +132,9 @@ exports.deleteAnagraphic = async (req, res) => {
 
     request.query(query, (err, result) => {
         if (err) { console.log(err) }
+
+        if (result.rowsAffected == 0)
+                res.status(404).render("notfound")
 
         pool.close()
             .catch((err) => { console.log(err) })

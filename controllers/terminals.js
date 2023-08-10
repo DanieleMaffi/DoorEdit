@@ -34,6 +34,9 @@ exports.loadTerminal = async (req, res) => {
             state: terminalState
         }
 
+        if (!terminalId)
+            res.status(404).render("notfound")
+
         res.status(200).render('terminal', {
             user: decodedToken['user'],
             terminals: decodedToken['terminals'],
@@ -41,6 +44,32 @@ exports.loadTerminal = async (req, res) => {
         })
     }
     catch (err) { console.log(err) }
+}
+
+exports.manageTerminal = async (req, res) => {
+    let decodedToken = await promisify(jwt.verify)(req.cookies['token'], process.env.JWT_SECRET);
+    let id = req.params.id
+
+    const pool = await sql.connect(config)
+
+    const anagraphicResult = await pool.query("SELECT * FROM tb_cfg_anagrafica");
+    const anagraphic = anagraphicResult.recordset;
+
+    query = "SELECT * FROM vw_autorizzazioni WHERE id_terminale = @id"
+    request = pool.request().input('id', sql.BigInt, id).query(query, (err, result) => {
+        if (err) console.log(err)
+
+        if (result.rowsAffected == 0)
+            res.status(404).render("notfound")
+        
+        res.status(200).render("manageTerminal", {
+            user: decodedToken["user"],
+            terminals: decodedToken["terminals"],
+            authorizations: result.recordset,
+            anagraphic: anagraphic,
+            id: id
+        })
+    })
 }
 
 exports.updateTerminal = async (req, res) => {
@@ -61,6 +90,47 @@ exports.updateTerminal = async (req, res) => {
         if(err) console.log(err)
 
         res.status(200).redirect('/home')
+
+        pool.close()
+            .catch((err) => { console.log(err) })
+    })
+}
+
+exports.addTerminalAccess = async (req, res) => {
+    let id = req.params.id
+    let person = req.body.person
+
+    const pool = await sql.connect(config)
+    let request = pool.request()
+    request.input('id', sql.NVarChar, id)
+    request.input('person', sql.BigInt, person)
+
+ 
+    request.query("INSERT INTO tb_cfg_autorizzazioni (id_terminale, id_anagrafica) VALUES (@id, @person)", (err, result) => {
+        if(err) {
+            console.log(err)
+            res.status(500).redirect("notfound")    //Should be seerver error page
+        }
+        else
+            res.status(200).redirect('/terminals/' + id + '/manage')
+    })
+}
+
+exports.deleteTerminalAccess = async (req, res) => {
+    let terminalId = req.params.terminalId
+    let anagraphicId = req.params.personId
+
+    const pool = await sql.connect(config)
+    let request = await pool.request()
+    request.input('terminal', sql.NVarChar, terminalId)
+    request.input('anagraphic', sql.NVarChar, anagraphicId)
+
+    let query = "DELETE FROM tb_cfg_autorizzazioni WHERE id_terminale = @terminal AND id_anagrafica = @anagraphic"
+
+    request.query(query, (err, result) => {
+        if(err) console.log(err)
+
+        res.status(200).redirect('/terminals/' + terminalId + 'manage') 
 
         pool.close()
             .catch((err) => { console.log(err) })
@@ -155,6 +225,9 @@ exports.deleteTerminal = async (req, res) => {
     request.input('id', sql.BigInt, id)
 
     request.query(query, (err, result) => {
+        if (result.rowsAffected == 0)
+            res.status(404).render("notfound")
+
         res.status(200).redirect('/home')
 
         pool.close()

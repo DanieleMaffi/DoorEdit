@@ -14886,7 +14886,6 @@ fieldset:disabled .btn {
 .info-container {
   width: 80vw;
 }
-
 /* ------------------------------ STYLING FOR OTHER DEVICES ----------------------------------*/
 @media (min-width:320px) {
   /* smartphones, portrait iPhone, portrait 480x320 phones (Android) */
