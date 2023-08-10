@@ -5,7 +5,7 @@ const router = express.Router();
 
 router.get('/add', authController.isLoggedIn, terminalsController.loadNewTerminal) 
 router.get('/:id', authController.isLoggedIn, terminalsController.loadTerminal)
-router.get('/:id/delete', terminalsController.deleteTerminal)
+router.get('/:id/delete', authController.isLoggedIn, terminalsController.deleteTerminal)
 router.post('/:id/update', authController.isLoggedIn, terminalsController.updateTerminal)
 router.post('/add/submit', authController.isLoggedIn, terminalsController.addTerminal)
 

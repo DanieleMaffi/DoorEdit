@@ -1,26 +1,41 @@
 const { promisify } = require("util");
 const jwt = require('jsonwebtoken');
 const sql = require("mssql");
+const terminalsController = require('./terminals')
 
 const config = require('./config.js');
 
 exports.loadUpdateAnagraphic = async (req, res) => {
     let decodedToken = await promisify(jwt.verify)(req.cookies['token'], process.env.JWT_SECRET);
     let id = req.params.id;
+    let authorizations = []
 
     try {
         const pool = await sql.connect(config)
-        let request = pool.request().input('id', sql.BigInt, id)
+
+        request = pool.request().input('id', sql.BigInt, id)
+        await request.query("SELECT ID_Terminale FROM tb_cfg_autorizzazioni WHERE id_anagrafica = @id", (err, result) => {
+            if (err) { console.log(err) }
+
+            for (let i = 0; i < result.recordset.length; i++) {
+                authorizations.push(result.recordset[i].ID_Terminale)
+            }
+
+            pool.close()
+                .catch((err) => { console.log(err) })
+        })
+
         request.query("SELECT * FROM tb_cfg_anagrafica WHERE rowid = @id ORDER BY cognome DESC", (err, result) => {
             if (err) { console.log(err) }
 
             pool.close()
                 .catch((err) => { console.log(err) })
 
-            res.status(200).render("editAnagraphic", { 
+            res.status(200).render("editAnagraphic", {
                 user: decodedToken['user'],
                 terminals: decodedToken['terminals'],
-                anagraphic: result.recordset[0]
+                anagraphic: result.recordset[0],
+                authorizations: authorizations
             })
         })
     }
@@ -54,20 +69,34 @@ exports.addAnagraphic = async (req, res) => {
             .catch((err) => { console.log(err) })
 
         res.status(200).redirect('/anagraphic')
-    })  
+    })
 }
 
 exports.updateAnagraphic = async (req, res) => {
+    let decodedToken = await promisify(jwt.verify)(req.cookies['token'], process.env.JWT_SECRET);
+
     let id = req.params.id;
     let name = req.body.name;
     let surname = req.body.surname;
-    let enabled = req.body.enabled;
     let stamps = req.body.stamps;
     let additional = req.body.additional;
     let entrances = req.body.entrances
 
-    if (!enabled) 
-        enabled = false;
+    let enabled = req.body.enabled ? true : false;
+    let singleEnabled = req.body.singleEnabled || [];   //Gets the array from the body request, otherwise assigns an empty array
+
+    // If the singleEnabled variable ever become an integer due to just one value in the body, this snippet will ensure that it becomes an array
+    if (typeof singleEnabled === 'string') {
+        singleEnabled = []
+        singleEnabled.push(req.body.singleEnabled)
+    }
+
+    singleEnabled.forEach(terminalId => {
+        terminalsController.updateTerminalAccess(terminalId, id)
+    });
+
+    if (singleEnabled.length === 0)
+        terminalsController.removeAccess(id)
 
     const pool = await sql.connect(config)
     let query = "UPDATE tb_cfg_anagrafica SET nome = @name, cognome = @surname, abilitato = @enabled, badge_timbrature = @stamps, badge_accessi = @entrances, badge_Aggiuntivo = @additional WHERE rowid = @id"

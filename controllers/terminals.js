@@ -63,10 +63,53 @@ exports.updateTerminal = async (req, res) => {
         res.status(200).redirect('/home')
 
         pool.close()
-            .then(() => { console.log('Closed pool') })
             .catch((err) => { console.log(err) })
     })
 }
+
+//This is not the callback function, it just updates authorizations
+exports.updateTerminalAccess = async (terminalId, anagraphicId) => {
+    const pool = await sql.connect(config)
+    let query = `IF (SELECT COUNT(*) FROM tb_cfg_autorizzazioni WHERE id_terminale = @terminal AND id_anagrafica = @anagraphic) = 0
+                BEGIN
+                INSERT INTO tb_cfg_autorizzazioni (id_terminale, id_anagrafica) VALUES (@terminal, @anagraphic)
+                END
+    `
+    let request = await pool.request()
+    request.input('terminal', sql.NVarChar, terminalId)
+    request.input('anagraphic', sql.NVarChar, anagraphicId)
+
+    request.query(query, (err, result) => {
+        if(err) console.log(err)
+
+        pool.close()
+            .catch((err) => { console.log(err) })
+    })
+
+    query = "DELETE FROM tb_cfg_autorizzazioni WHERE id_terminale != @terminal AND id_anagrafica = @anagraphic"
+    request.query(query, (err, result) => {
+        if(err) console.log(err)
+
+        pool.close()
+            .catch((err) => { console.log(err) })
+    })
+} 
+
+// Removes all the acces to a specified person
+exports.removeAccess = async (id) => {
+    const pool = await sql.connect(config)
+    
+    let request = await pool.request()
+    request.input('anagraphic', sql.NVarChar, id)
+
+    query = "DELETE FROM tb_cfg_autorizzazioni WHERE id_anagrafica = @anagraphic"
+    request.query(query, (err, result) => {
+        if(err) console.log(err)
+
+        pool.close()
+            .catch((err) => { console.log(err) })
+    })
+} 
 
 exports.loadNewTerminal = async (req,  res) => {
     let decodedToken = await promisify(jwt.verify)(req.cookies['token'], process.env.JWT_SECRET)
@@ -99,7 +142,6 @@ exports.addTerminal = async (req, res) => {
         res.status(200).redirect('/home')
 
         pool.close()
-            .then(() => { console.log("Closed pool") })
             .catch((err => {console.log(err)}))
     })
 }

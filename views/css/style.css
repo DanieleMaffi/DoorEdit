@@ -7481,6 +7481,10 @@ button.bg-warning:focus {
 }
 
 .bg-danger {
+  background-color: #9c2732 !important;
+}
+
+.bg-danger:hover {
   background-color: #c83241 !important;
 }
 
@@ -7488,7 +7492,7 @@ a.bg-danger:hover,
 a.bg-danger:focus,
 button.bg-danger:hover,
 button.bg-danger:focus {
-  background-color: #bd2130 !important;
+  background-color: #9c2732 !important;
 }
 
 .bg-light {

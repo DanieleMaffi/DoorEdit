@@ -9,7 +9,7 @@
     <link href="/src/fonts.googleapis.com_css_family=Poppins_300,400,500,600,700,800,900.css" rel="stylesheet">
     <link rel="stylesheet" href="/src/stackpath.bootstrapcdn.com_font-awesome_4.7.0_css_font-awesome.min.css">
     <link rel="icon" type="images/x-icon" href="/src/minilogo.png" />
-    <title>Cambia Password</title>
+    <title>Mofica anagrafica</title>
 </head>
 
 <body>
@@ -103,11 +103,29 @@
                         <label for="entrances" class="form-label">Badge accessi</label>
                         <input type="text" placeholder="<%=anagraphic.Badge_Accessi%>" value="<%=anagraphic.Badge_Accessi%>" class="form-control" id="entrances" name="entrances">
                     </div>
-                    <div class="mb-4">
+                    <div class="mb-5">
                         <label for="additional" class="form-label">Badge aggiuntivo</label>
                         <input type="text" placeholder="<%=anagraphic.Badge_Aggiuntivo%>" value="<%=anagraphic.Badge_Aggiuntivo%>" class="form-control" id="additional" name="additional">
                     </div>
-                    <button type="submit" class="btn btn-primary">Aggiorna</button>
+                    <h4 class="mb-4">Terminali associati</h4>
+                    <div class="d-flex flex-wrap">
+                        <% for (i = 0; i < terminals.length; i++) { %>
+                            <div class="d-flex flex-wrap mr-5 pr-1 mb-4">
+                                <label class="switch mr-1">
+                                    <% if (authorizations.includes(terminals[i].ID_Terminale)) { %>
+                                        <input type="checkbox" name="singleEnabled" value="<%=terminals[i].ID_Terminale%>" checked>
+                                    <% } else { %>
+                                        <input type="checkbox" name="singleEnabled" value="<%=terminals[i].ID_Terminale%>">
+                                    <% } %> 
+                                    <span class="slider round"></span>
+                                </label>
+                                <div style="position: relative; top: 5px;">
+                                    <label style="text-align: center; margin: 0;"><%=terminals[i].Nome_Terminale%> <%=terminals[i].ID_Terminale%></label>
+                                </div>
+                            </div>
+                        <% } %>
+                    </div>
+                    <button type="submit" class="btn btn-primary mt-3">Aggiorna</button>
                 </form>
             </div>
         </div>

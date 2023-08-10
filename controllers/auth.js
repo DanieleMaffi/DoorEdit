@@ -69,7 +69,6 @@ exports.login = async (req, res) => {
                 res.cookie('token', token, { path: '/' })
 
                 pool.close()
-                    .then(() => { console.log('Closed pool') })
                     .catch((err) => { console.log(err) })
 
                 //Redirecting to home
@@ -144,7 +143,6 @@ exports.changePassword = async (req, res) => {
             res.status(201).redirect('/home');
 
             pool.close()
-                .then(() => { console.log('Closed pool') })
                 .catch((err) => { console.log(err) })
         })
     }
