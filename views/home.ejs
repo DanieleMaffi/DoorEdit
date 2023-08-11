@@ -41,24 +41,27 @@
                         <a href="#terminalsSubmenu" data-toggle="collapse" aria-expanded="false"
                             class="dropdown-toggle">Terminali</a>
                         <ul class="collapse list-unstyled" id="terminalsSubmenu">
-                            <% for(let i = 0; i < terminals.length; i++) { %>
-                                <% if (terminals[i].Stato)  { %>
+                            <% for(let i=0; i < terminals.length; i++) { %>
+                                <% if (terminals[i].Stato) { %>
                                     <li>
                                         <a href="/terminals/<%=terminals[i].rowID%>" style="color: rgb(137, 227, 137);">
-                                            <%=terminals[i].Nome_Terminale%> <%=terminals[i].ID_Terminale%>
+                                            <%=terminals[i].Nome_Terminale%>
+                                                <%=terminals[i].ID_Terminale%>
                                         </a>
                                     </li>
-                                <% } else { %>
-                                    <li>
-                                        <a href="/terminals/<%=terminals[i].rowID%>" style="color: rgb(240, 88, 116);">
-                                            <%=terminals[i].Nome_Terminale%> <%=terminals[i].ID_Terminale%>
-                                        </a>
-                                    </li>
-                                <% } %>
-                            <% } %>
-                            <li>
-                                <a href="/terminals/add">Aggiungi un terminale</a>
-                            </li>
+                                    <% } else { %>
+                                        <li>
+                                            <a href="/terminals/<%=terminals[i].rowID%>"
+                                                style="color: rgb(240, 88, 116);">
+                                                <%=terminals[i].Nome_Terminale%>
+                                                    <%=terminals[i].ID_Terminale%>
+                                            </a>
+                                        </li>
+                                        <% } %>
+                                            <% } %>
+                                                <li>
+                                                    <a href="/terminals/add">Aggiungi un terminale</a>
+                                                </li>
                         </ul>
                     </li>
                     <li>
@@ -78,18 +81,22 @@
 
         <!-- Page Content  -->
         <div id="content" class="p-4 p-md-5 pt-5">
-
-            <h1 class="mb-4 mt-3">Pagina Principale</h1>
-            <h4>DoorEdit</h4>
-            <p>DoorEdit è una piattaforma che consente il managing dei terminali di accesso. <br>
-            Naviga tra le diverse sezioni utlizzando la barra a sinistra.</p>
+            <div class="d-flex align-items-center justify-content-center" style="height: calc(100vh - 100px)">
+                <p class="big-logo">DoorEdit</p>
+            </div>
         </div>
-    </div>
 
-    <script src="js/jquery.min.js"></script>
-    <script src="js/popper.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/main.js"></script>
+</body>
+
+</html>
+
+</div>
+</div>
+
+<script src="js/jquery.min.js"></script>
+<script src="js/popper.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/main.js"></script>
 
 </body>
 

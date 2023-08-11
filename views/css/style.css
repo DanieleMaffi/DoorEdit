@@ -12198,6 +12198,21 @@ input:checked + .slider:before {
   display: none;
 }
 
+.big-logo {
+  font-size: 120px;
+  font-weight: 800;
+  letter-spacing: 10px;
+  transition: 1.5s;
+  color: #fff;
+}
+
+.big-logo:hover {
+  letter-spacing: 60px;
+  color: #8EC5FC;
+  color: linear-gradient(62deg, #8EC5FC 0%, #E0C3FC 100%);
+  transition: 0.5s;
+}
+
 @media screen and (max-width:1400px) {
 
   /* smartphones, Android phones, landscape iPhone, iPad and small PCs */
