@@ -12141,6 +12141,7 @@ input:checked + .slider:before {
   align-items: center;
   justify-self: center;
   z-index: 100;
+  width: 40rem;
 }
 
 .show {
@@ -12178,8 +12179,8 @@ input:checked + .slider:before {
 
 .popup .icon {
   position: absolute;
-  top: 20px;
-  right: 17px;
+  top: 18px;
+  right: 16px;
   cursor: pointer;
 }
 
@@ -12192,5 +12193,12 @@ input:checked + .slider:before {
   /* smartphones, Android phones, landscape iPhone, iPad and small PCs */
   .form-card {
     width: 98%;
+  }
+
+  .popup {
+    width: 100%;
+    top: 0;
+    right: 0;
+    height: 100vh;
   }
 }

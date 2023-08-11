@@ -86,7 +86,7 @@ exports.isLoggedIn = async (req, res, next) => {
         try {
             //Verifying the token
             let decoded = await promisify(jwt.verify)(req.cookies['token'], process.env.JWT_SECRET);
-            //console.log(decoded);
+
         } catch (err) {
             console.log(err)
             return res.status(401).redirect('/')

@@ -109,7 +109,7 @@ exports.addTerminalAccess = async (req, res) => {
     request.query("INSERT INTO tb_cfg_autorizzazioni (id_terminale, id_anagrafica) VALUES (@id, @person)", (err, result) => {
         if(err) {
             console.log(err)
-            res.status(500).redirect("notfound")    //Should be seerver error page
+            res.status(500).render("serverError")    //Should be seerver error page
         }
         else
             res.status(200).redirect('/terminals/' + id + '/manage')
@@ -130,7 +130,7 @@ exports.deleteTerminalAccess = async (req, res) => {
     request.query(query, (err, result) => {
         if(err) console.log(err)
 
-        res.status(200).redirect('/terminals/' + terminalId + 'manage') 
+        res.status(200).redirect('/terminals/' + terminalId + '/manage') 
 
         pool.close()
             .catch((err) => { console.log(err) })

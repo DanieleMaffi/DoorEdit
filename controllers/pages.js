@@ -63,7 +63,9 @@ exports.loadAnagraphic = async (req, res) => {
 
 exports.loadTransits = async (req, res) => {
     await sql.connect(config)
-    let query = "SELECT CONVERT(VARCHAR, data, 105) as Data, CONVERT(VARCHAR, data, 108) as Time, Nome, Cognome, Badge, Terminale, Esito FROM tb_transiti ORDER BY Data"
+    let query = `SELECT CONVERT(VARCHAR, data, 105) as Data, CONVERT(VARCHAR, data, 108) as Time, Nome, Cognome, Badge, Terminale, Esito 
+                FROM tb_transiti 
+                ORDER BY YEAR(data) DESC, MONTH(data) DESC, DAY(data) DESC, Time DESC`
 
     let decodedToken = await promisify(jwt.verify)(req.cookies['token'], process.env.JWT_SECRET);
 
