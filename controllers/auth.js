@@ -33,6 +33,7 @@ exports.login = async (req, res) => {
 
         //Creating reqquest object and adding parsed parameters
         let request = await pool.request()
+        // Associating the parameters in the query to actual variables
         request.input('username', sql.NVarChar, username)
         request.input('password', sql.NVarChar, password)
 
@@ -42,7 +43,7 @@ exports.login = async (req, res) => {
 
             let dbPassword = results.recordset[0]?.Password;    //? is an optional chaining operator that checks if th value exists in the recordset before acceesing it
 
-            if (results.recordset.length == 0 || !(password === dbPassword)) {   //Check if the password is correct
+            if (results.recordset.length == 0 || !(password === dbPassword)) {   //Checking if the password is correct by looking for empty results or mismatching passowords
 
                 //Closes the connection
                 pool.close().then(() => { console.log('Closed pool') })
@@ -72,9 +73,7 @@ exports.login = async (req, res) => {
                     .catch((err) => { console.log(err) })
 
                 //Redirecting to home
-                res.status(201).redirect('/home');
-
-                
+                return res.status(201).redirect('/home');
             }
         })
     } catch (err) { }
@@ -98,7 +97,7 @@ exports.isLoggedIn = async (req, res, next) => {
 }
 
 exports.logout = (req, res) => {
-    //Cleargin the cookies to remove the stored token
+    //Clearing the cookies to remove the stored token
     res.clearCookie('token');
 
     res.redirect('/');
@@ -106,6 +105,7 @@ exports.logout = (req, res) => {
 
 //If both given passwords are equal then it updates the password in the database
 exports.changePassword = async (req, res) => {
+    // Decoding the token in order to access its contents
     let decodedToken = await promisify(jwt.verify)(req.cookies['token'], process.env.JWT_SECRET)
     let firstPassword = req.body.firstPassword;
     let secondPassword = req.body.secondPassword;
@@ -140,10 +140,11 @@ exports.changePassword = async (req, res) => {
     try {
         await request.query(query, function (err, results) {
             if (err) console.log(err)
-            res.status(201).redirect('/home');
 
             pool.close()
                 .catch((err) => { console.log(err) })
+
+            return res.status(201).redirect('/home');
         })
     }
     catch (err) { }

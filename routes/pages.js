@@ -3,7 +3,7 @@ const authController = require("../controllers/auth.js");
 const pagesController = require("../controllers/pages.js");
 const router = express.Router();
 
-router.get('/', (req, res) => {     //when the home page is requested the login .ejs file will be loaded
+router.get('/', (req, res) => {     //when the home page is requested the login .ejs file will be loaded, sending an object as payload
     res.status(200).render("login", { root: './views/', message: "" })
 });
 

@@ -4,6 +4,7 @@ const sql = require("mssql");
 
 const config = require('./config.js');
 
+// Loads the home page
 exports.loadHome = async (req, res) => {
 
     //Decoding the token drom the cookies in the browser, this is done in order to get the ID nad username of the user
@@ -13,6 +14,7 @@ exports.loadHome = async (req, res) => {
 
     let query = `SELECT * FROM tb_cfg_terminali`
 
+    // Retrieving all the terminals
     try {
         sql.query(query, (err, result) => {
             if(err) console.log(err)
@@ -24,20 +26,20 @@ exports.loadHome = async (req, res) => {
             let token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
     
             res.cookie('token', token, { path: '/' })
+
+            pool.close()
+                .catch((err) => { console.log(err) })
     
-            res.status(200).render("home", {
+            return res.status(200).render("home", {
                 user: decodedToken['user'],
                 terminals: result.recordset
             })
-        
-            pool.close()
-                .catch((err) => { console.log(err) })
         })
     }
     catch (err) { console.log(err) } 
 }
 
-//TODO
+// Loads the anagraphic page
 exports.loadAnagraphic = async (req, res) => {
     await sql.connect(config)
     let query = "SELECT * FROM tb_cfg_anagrafica"
@@ -47,22 +49,26 @@ exports.loadAnagraphic = async (req, res) => {
     try {
         sql.query(query, (err, result) => {
             if(err) console.log(err)
+
+            sql.close()
+                .catch((err) => { console.log(err) })
     
-            res.status(200).render("anagraphic", {
+            return res.status(200).render("anagraphic", {
                 user: decodedToken['user'],
                 terminals: decodedToken['terminals'],
                 anagraphic: result.recordset
             })
-    
-            sql.close()
-                .catch((err) => { console.log(err) })
         })
     }
     catch (err) { console.log(err) }
 }
 
+// Loads the transits page
 exports.loadTransits = async (req, res) => {
     await sql.connect(config)
+
+    //  The sql convert functions are used to chnage the date format and separate respectively date and time,
+    // Also excracting separately day, month and year for ordering purposes
     let query = `SELECT CONVERT(VARCHAR, data, 105) as Data, CONVERT(VARCHAR, data, 108) as Time, Nome, Cognome, Badge, Terminale, Esito 
                 FROM tb_transiti 
                 ORDER BY YEAR(data) DESC, MONTH(data) DESC, DAY(data) DESC, Time DESC`

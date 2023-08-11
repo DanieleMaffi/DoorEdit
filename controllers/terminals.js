@@ -3,8 +3,10 @@ const jwt = require('jsonwebtoken');
 const sql = require("mssql");
 
 const config = require('./config.js');
+
 //When the corresponding url is called, loads the page associated with the terminal given as a parameter in the uri ex: /terminals/12
 exports.loadTerminal = async (req, res) => {
+    // Getting the id from the parameters
     let terminalSqlId = req.params.id
 
     let decodedToken = await promisify(jwt.verify)(req.cookies['token'], process.env.JWT_SECRET);
@@ -13,7 +15,6 @@ exports.loadTerminal = async (req, res) => {
     //This is not to be confused with the other id, which corresponds to the actaul dtabase id
     let terminalId = 0
     let terminalState = 0
-
     let terminalName = ""
 
     try {
@@ -25,7 +26,7 @@ exports.loadTerminal = async (req, res) => {
             terminalName = terminals[i].Nome_Terminale
             terminalState = terminals[i].Stato
         }
-        //The object that contains the spicified terminal to edit
+        // Creating the object that contains the spicified terminal to edit
         let terminal = {
             id: terminalId,
             ip: terminalIp,
@@ -34,10 +35,11 @@ exports.loadTerminal = async (req, res) => {
             state: terminalState
         }
 
+        // If the id of the specified terminal is not found, gives an error messages
         if (!terminalId)
-            res.status(404).render("notfound")
+            return res.status(404).render("notfound")
 
-        res.status(200).render('terminal', {
+        return res.status(200).render('terminal', {
             user: decodedToken['user'],
             terminals: decodedToken['terminals'],
             terminal: terminal
@@ -46,15 +48,18 @@ exports.loadTerminal = async (req, res) => {
     catch (err) { console.log(err) }
 }
 
+// Loads the terminal's managing page, where authorizations asssociated to it will be displayed
 exports.manageTerminal = async (req, res) => {
     let decodedToken = await promisify(jwt.verify)(req.cookies['token'], process.env.JWT_SECRET);
     let id = req.params.id
 
     const pool = await sql.connect(config)
 
+    // Getting the entire anagraphics
     const anagraphicResult = await pool.query("SELECT * FROM tb_cfg_anagrafica");
     const anagraphic = anagraphicResult.recordset;
 
+    // Getting the authorizations associated to that specific terminal
     query = "SELECT * FROM vw_autorizzazioni WHERE id_terminale = @id"
     request = pool.request().input('id', sql.BigInt, id).query(query, (err, result) => {
         if (err) console.log(err)
@@ -62,7 +67,7 @@ exports.manageTerminal = async (req, res) => {
         if (result.rowsAffected == 0)
             res.status(404).render("notfound")
         
-        res.status(200).render("manageTerminal", {
+        return res.status(200).render("manageTerminal", {
             user: decodedToken["user"],
             terminals: decodedToken["terminals"],
             authorizations: result.recordset,
@@ -72,6 +77,7 @@ exports.manageTerminal = async (req, res) => {
     })
 }
 
+// Updates the information about the terminal
 exports.updateTerminal = async (req, res) => {
     let sqlId = req.params.id
     let name = req.body.name
@@ -89,13 +95,14 @@ exports.updateTerminal = async (req, res) => {
     request.query(query, (err, result) => {
         if(err) console.log(err)
 
-        res.status(200).redirect('/home')
-
         pool.close()
             .catch((err) => { console.log(err) })
+
+        return res.status(200).redirect('/home')
     })
 }
 
+// Gives access to a person to a specific terminal
 exports.addTerminalAccess = async (req, res) => {
     let id = req.params.id
     let person = req.body.person
@@ -109,13 +116,14 @@ exports.addTerminalAccess = async (req, res) => {
     request.query("INSERT INTO tb_cfg_autorizzazioni (id_terminale, id_anagrafica) VALUES (@id, @person)", (err, result) => {
         if(err) {
             console.log(err)
-            res.status(500).render("serverError")    //Should be seerver error page
+            return res.status(500).render("serverError")    // Render the error 500 page if the server gives an error
         }
-        else
-            res.status(200).redirect('/terminals/' + id + '/manage')
+        
+        return res.status(200).redirect('/terminals/' + id + '/manage')
     })
 }
 
+// Removes the access to a specific terminal
 exports.deleteTerminalAccess = async (req, res) => {
     let terminalId = req.params.terminalId
     let anagraphicId = req.params.personId
@@ -127,24 +135,25 @@ exports.deleteTerminalAccess = async (req, res) => {
 
     let query = "DELETE FROM tb_cfg_autorizzazioni WHERE id_terminale = @terminal AND id_anagrafica = @anagraphic"
 
+    // Deleting the access to a terminal, to a specific person
     request.query(query, (err, result) => {
         if(err) console.log(err)
 
-        res.status(200).redirect('/terminals/' + terminalId + '/manage') 
-
         pool.close()
             .catch((err) => { console.log(err) })
+
+        return res.status(200).redirect('/terminals/' + terminalId + '/manage') 
     })
 }
 
-//This is not the callback function, it just updates authorizations
+// This is just the update but callback version
+// This function adds an authorization given the terminal and the person IDs
 exports.updateTerminalAccess = async (terminalId, anagraphicId) => {
     const pool = await sql.connect(config)
-    let query = `IF (SELECT COUNT(*) FROM tb_cfg_autorizzazioni WHERE id_terminale = @terminal AND id_anagrafica = @anagraphic) = 0
-                BEGIN
-                INSERT INTO tb_cfg_autorizzazioni (id_terminale, id_anagrafica) VALUES (@terminal, @anagraphic)
-                END
-    `
+
+    // Adds an authorization only if it's not already present
+    let query = "INSERT INTO tb_cfg_autorizzazioni (id_terminale, id_anagrafica) VALUES (@terminal, @anagraphic)"
+    
     let request = await pool.request()
     request.input('terminal', sql.NVarChar, terminalId)
     request.input('anagraphic', sql.NVarChar, anagraphicId)
@@ -156,16 +165,10 @@ exports.updateTerminalAccess = async (terminalId, anagraphicId) => {
             .catch((err) => { console.log(err) })
     })
 
-    query = "DELETE FROM tb_cfg_autorizzazioni WHERE id_terminale != @terminal AND id_anagrafica = @anagraphic"
-    request.query(query, (err, result) => {
-        if(err) console.log(err)
-
-        pool.close()
-            .catch((err) => { console.log(err) })
-    })
+    return
 } 
 
-// Removes all the acces to a specified person
+// Removes all the access to a specified person, deleting all the authoriaztion associated to them
 exports.removeAccess = async (id) => {
     const pool = await sql.connect(config)
     
@@ -179,8 +182,11 @@ exports.removeAccess = async (id) => {
         pool.close()
             .catch((err) => { console.log(err) })
     })
+
+    return
 } 
 
+// Loads the page to add a terminal
 exports.loadNewTerminal = async (req,  res) => {
     let decodedToken = await promisify(jwt.verify)(req.cookies['token'], process.env.JWT_SECRET)
 
@@ -191,6 +197,7 @@ exports.loadNewTerminal = async (req,  res) => {
     })
 }
 
+// Does the actual uploading of the terminal to the databases
 exports.addTerminal = async (req, res) => {
     let name = req.body.name
     let id = req.body.id
@@ -209,13 +216,14 @@ exports.addTerminal = async (req, res) => {
     request.query(query, (err, result) => {
         if(err) console.log(err)
 
-        res.status(200).redirect('/home')
-
         pool.close()
             .catch((err => {console.log(err)}))
+
+        return res.status(200).redirect('/home')
     })
 }
 
+// Deletes a terminal
 exports.deleteTerminal = async (req, res) => {
     let id = req.params.id
 
@@ -228,10 +236,10 @@ exports.deleteTerminal = async (req, res) => {
         if (result.rowsAffected == 0)
             res.status(404).render("notfound")
 
-        res.status(200).redirect('/home')
-
         pool.close()
             .then(() => { console.log("Closed pool") })
             .catch((err => {console.log(err)}))
+
+        return res.status(200).redirect('/home')
     })
 }

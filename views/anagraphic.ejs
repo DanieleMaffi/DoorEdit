@@ -14,7 +14,7 @@
 
 <body>
 
-    <a class="circle-wrap" href="#">
+    <a class="circle-wrap show-arrow" href="#" id="arrow">
         <i class="fa fa-arrow-up"></i>
     </a>
 
@@ -85,55 +85,79 @@
 
         <!-- Page Content  -->
         <div id="content" class="p-4 p-md-5 pt-5">
-
             <h1 class="mt-3">Anagrafica</h1>
             <h5 class="mb-5">Qui puoi aggiungere, modificare ed eliminare elementi dall'anagrafica.</h5>
+            <div class="d-flex mb-2">
+
+                <div class="form-inline justify-content-end">
+                    <input class="form-control mr-2" id="searchBox" type="search" placeholder="Cerca" aria-label="Cerca">
+                    <button class="btn btn-outline-primary my-2 my-sm-0 mr-2" onclick="search()"><i class="fa fa-search"></i></button>
+                    <button class="btn btn-outline-danger my-2 my-sm-0" onclick="resetSearch()">Reset</button>
+                </div>
+            </div>
+
+
             <div class="table-responsive">
-            <table class="table table-hover table-dark">
-                <thead>
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Nome</th>
-                        <th scope="col">Cognome</th>
-                        <th scope="col">Abilitato</th>
-                        <th scope="col">Badge timbrature</th>
-                        <th scope="col">Badge accessi</th>
-                        <th scope="col">Badge Aggiuntivo</th>
-                        <th scope="col" >Opzioni</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <% for (let i = 0; i < anagraphic.length; i++) { %>
+                <table class="table table-hover table-dark">
+                    <thead>
                         <tr>
-                            <th class="align-middle" scope="row"><%=anagraphic[i].rowID%></th>
-                            <td class="align-middle"><%=anagraphic[i].Nome%></td>
-                            <td class="align-middle"><%=anagraphic[i].Cognome%></td>
-                            <% if (anagraphic[i].Abilitato) { %>
-                                <td class="align-middle">Si</td>
-                            <% } else { %>
-                                <td class="align-middle">No</td>
-                            <% } %>
-                            <td class="align-middle"><%=anagraphic[i].Badge_Timbrature%></td>
-                            <td class="align-middle"><%=anagraphic[i].Badge_Accessi%></td>
-                            <td class="align-middle"><%=anagraphic[i].Badge_Aggiuntivo%></td>
-                            <td class="align-middle">
-                                <button style="cursor: pointer;" class="mr-3 btn btn-secondary" onclick="editElement(<%=anagraphic[i].rowID%>)">
-                                    <i class="fa fa-pencil"></i>
-                                </button>
-                                <button style="cursor: pointer;" class="btn btn-danger" onclick="deleteElement(<%=anagraphic[i].rowID%>)">
-                                    <i class="fa fa-trash"></i>
-                                </button>
-                            </td>
+                            <th scope="col">#</th>
+                            <th scope="col">Nome</th>
+                            <th scope="col">Cognome</th>
+                            <th scope="col">Abilitato</th>
+                            <th scope="col">Badge timbrature</th>
+                            <th scope="col">Badge accessi</th>
+                            <th scope="col">Badge Aggiuntivo</th>
+                            <th scope="col">Opzioni</th>
                         </tr>
-                    <% } %>
-                    <tr>
-                        <td colspan="10">
-                            <a style="display: flex; justify-content: center;" href="/anagraphic/add">Aggiungi un elemento</a>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+                    </thead>
+                    <tbody>
+                        <% for (let i=0; i < anagraphic.length; i++) { %>
+                            <tr class="table-row">
+                                <th class="align-middle" scope="row">
+                                    <%=anagraphic[i].rowID%>
+                                </th>
+                                <td class="align-middle">
+                                    <%=anagraphic[i].Nome%>
+                                </td>
+                                <td class="align-middle">
+                                    <%=anagraphic[i].Cognome%>
+                                </td>
+                                <% if (anagraphic[i].Abilitato) { %>
+                                    <td class="align-middle">Si</td>
+                                    <% } else { %>
+                                        <td class="align-middle">No</td>
+                                        <% } %>
+                                            <td class="align-middle">
+                                                <%=anagraphic[i].Badge_Timbrature%>
+                                            </td>
+                                            <td class="align-middle">
+                                                <%=anagraphic[i].Badge_Accessi%>
+                                            </td>
+                                            <td class="align-middle">
+                                                <%=anagraphic[i].Badge_Aggiuntivo%>
+                                            </td>
+                                            <td class="align-middle">
+                                                <button style="cursor: pointer;" class="mr-3 btn btn-secondary"
+                                                    onclick="editElement(<%=anagraphic[i].rowID%>)">
+                                                    <i class="fa fa-pencil"></i>
+                                                </button>
+                                                <button style="cursor: pointer;" class="btn btn-danger"
+                                                    onclick="deleteElement(<%=anagraphic[i].rowID%>)">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+                                            </td>
+                            </tr>
+                            <% } %>
+                                <tr>
+                                    <td colspan="10">
+                                        <a style="display: flex; justify-content: center;"
+                                            href="/anagraphic/add">Aggiungi un elemento</a>
+                                    </td>
+                                </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
     <script>
@@ -145,12 +169,32 @@
             if (confirm('Sei sicuro di voler eliminare questo elemento?'))
                 window.location.href = "/anagraphic/" + rowID + "/delete"
         }
+
+        function search() {
+            let searchBox = document.getElementById("searchBox");
+            let people = document.getElementsByClassName("table-row")
+
+            Array.prototype.forEach.call(people, person => {
+                person.classList.remove("hide")
+            });
+
+            Array.prototype.forEach.call(people, person => {
+                if (!person.innerText.includes(searchBox.value.toUpperCase()))
+                    person.classList.toggle("hide")
+            });
+        }
+        
+        function resetSearch() {
+            let searchBox = document.getElementById("searchBox")
+            searchBox.value = ""
+            search()
+        }
     </script>
     <script src="js/jquery.min.js"></script>
     <script src="js/popper.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/main.js"></script>
-
+    <script src="js/arrow.js"></script>
 </body>
 
 </html>

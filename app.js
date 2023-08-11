@@ -3,6 +3,7 @@ const app = express();
 const dotenv = require("dotenv").config();
 var cookies = require("cookie-parser");
 
+// Setting up the middlewares
 app.use(express.static("views"));
 app.use(express.static("views/js"));
 app.use(express.static("views/src"));
