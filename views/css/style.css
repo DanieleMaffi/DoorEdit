@@ -12199,18 +12199,45 @@ input:checked + .slider:before {
 }
 
 .big-logo {
-  font-size: 120px;
   font-weight: 800;
-  letter-spacing: 10px;
+  font-size: 120px;
+  letter-spacing: 60px;
   transition: 1.5s;
-  color: #fff;
+  background: linear-gradient(80deg, #8EC5FC 0%, #E0C3FC 85%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
 }
 
 .big-logo:hover {
-  letter-spacing: 60px;
-  color: #8EC5FC;
-  color: linear-gradient(62deg, #8EC5FC 0%, #E0C3FC 100%);
+  letter-spacing: 5px;
   transition: 0.5s;
+}
+
+.big-logo {
+  border-right: solid 3px #E0C3FC;
+  white-space: nowrap;
+  overflow: hidden;    
+}
+
+/* Animation */
+.big-logo {
+  animation: animated-text 2s steps(200,end) 1s 1 normal both,
+             animated-cursor 800ms steps(29,end) infinite;
+}
+
+/* text animation */
+
+@keyframes animated-text{
+  from{width: 0;}
+  to{width: 65%}
+}
+
+/* cursor animations */
+
+@keyframes animated-cursor{
+  from{border-right-color: #666}
+  to{border-right-color: transparent;}
 }
 
 @media screen and (max-width:1400px) {
@@ -12225,5 +12252,10 @@ input:checked + .slider:before {
     top: 0;
     right: 0;
     height: 100vh;
+  }
+
+  .big-logo {
+    rotate: 90deg;
+    font-size: 50px;
   }
 }

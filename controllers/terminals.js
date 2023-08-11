@@ -39,7 +39,7 @@ exports.loadTerminal = async (req, res) => {
         }
 
         // If the id of the specified terminal is not found, gives an error messages
-        if (!terminalId)
+        if (!terminalId && !terminalIp && !terminalState && !terminalName)
             return res.status(404).render("notfound")
 
         return res.status(200).render('terminal', {
@@ -223,6 +223,7 @@ exports.loadNewTerminal = async (req, res) => {
         user: decodedToken['user'],
         id: decodedToken['id'],
         terminals: decodedToken['terminals'],
+        message: ""
     })
 }
 
@@ -243,10 +244,19 @@ exports.addTerminal = async (req, res) => {
     request.input('ip', sql.NVarChar, ip)
 
     request.query(query, (err, result) => {
-        if (err) console.log(err)
-
         pool.close()
             .catch((err => { console.log(err) }))
+
+
+        if (err) {
+            console.log(err)
+            return res.status(400).render('newTerminal', {
+                user: decodedToken['user'],
+                id: decodedToken['id'],
+                terminals: decodedToken['terminals'],
+                message: "Non puoi inserire un terminale con lo stesso indirizzo o codice!"
+            })
+        }
 
         return res.status(200).redirect('/home')
     })
