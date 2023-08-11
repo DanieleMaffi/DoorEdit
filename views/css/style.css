@@ -12222,7 +12222,7 @@ input:checked + .slider:before {
 
 /* Animation */
 .big-logo {
-  animation: animated-text 2s steps(200,end) 1s 1 normal both,
+  animation: animated-text 2s steps(500,end) 1s 1 normal both,
              animated-cursor 800ms steps(29,end) infinite;
 }
 
