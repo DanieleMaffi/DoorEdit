@@ -4,6 +4,9 @@ const sql = require("mssql");
 
 const config = require('./config.js');
 
+let storedAnagraphic = {}
+let storedAuthorizations = {}
+
 //When the corresponding url is called, loads the page associated with the terminal given as a parameter in the uri ex: /terminals/12
 exports.loadTerminal = async (req, res) => {
     // Getting the id from the parameters
@@ -59,18 +62,23 @@ exports.manageTerminal = async (req, res) => {
     const anagraphicResult = await pool.query("SELECT * FROM tb_cfg_anagrafica");
     const anagraphic = anagraphicResult.recordset;
 
+    storedAnagraphic = anagraphic
+
     try {
         // Getting the authorizations associated to that specific terminal
         query = "SELECT * FROM vw_autorizzazioni WHERE id_terminale = @id"
         request = pool.request().input('id', sql.NVarChar, id).query(query, (err, result) => {
             if (err) console.log(err)
 
+            storedAuthorizations = result.recordset
+
             return res.status(200).render("manageTerminal", {
                 user: decodedToken["user"],
                 terminals: decodedToken["terminals"],
                 authorizations: result.recordset,
                 anagraphic: anagraphic,
-                id: id
+                id: id,
+                message: false
             })
         })
     }
@@ -104,6 +112,7 @@ exports.updateTerminal = async (req, res) => {
 
 // Gives access to a person to a specific terminal
 exports.addTerminalAccess = async (req, res) => {
+    let decodedToken = await promisify(jwt.verify)(req.cookies['token'], process.env.JWT_SECRET);
     let id = req.params.id
     let person = req.body.person
 
@@ -112,12 +121,32 @@ exports.addTerminalAccess = async (req, res) => {
     request.input('id', sql.NVarChar, id)
     request.input('person', sql.BigInt, person)
 
+    // This'll add the authorization only if it doesn't already exist, and if it does returns 1
+    query = `IF (SELECT COUNT(*) FROM tb_cfg_autorizzazioni WHERE id_terminale = @id AND id_anagrafica = @person) = 0
+            BEGIN
+            INSERT INTO tb_cfg_autorizzazioni (id_terminale, id_anagrafica) VALUES (@id, @person)
+            END
+            ELSE
+            BEGIN
+            SELECT 1
+            END`
 
-    request.query("INSERT INTO tb_cfg_autorizzazioni (id_terminale, id_anagrafica) VALUES (@id, @person)", (err, result) => {
+    request.query(query, (err, result) => {
         if (err) {
             console.log(err)
             return res.status(500).render("serverError")    // Render the error 500 page if the server gives an error
         }
+
+        if (result)
+            return res.render("manageTerminal", {
+                user: decodedToken['user'],
+                userId: decodedToken['user_id'],
+                terminals: decodedToken['terminals'],
+                id: id,
+                authorizations: storedAuthorizations,
+                anagraphic: storedAnagraphic,
+                message: true 
+            })
 
         return res.status(200).redirect('/terminals/' + id + '/manage')
     })
