@@ -60,6 +60,7 @@ exports.login = async (req, res) => {
                 //Creating the paylod to place in the token
                 let payload = {
                     user: results.recordset[0]?.Username,
+                    userId: results.recordset[0]?.ID
                 }
 
                 //Creating the token
@@ -84,7 +85,7 @@ exports.isLoggedIn = async (req, res, next) => {
     if (req.cookies['token']) {
         try {
             //Verifying the token
-            let decoded = await promisify(jwt.verify)(req.cookies['token'], process.env.JWT_SECRET);
+            await promisify(jwt.verify)(req.cookies['token'], process.env.JWT_SECRET);
 
         } catch (err) {
             console.log(err)
@@ -132,7 +133,7 @@ exports.changePassword = async (req, res) => {
     // connect to your database
     const pool = await sql.connect(config)
 
-    let query = "UPDATE tb_utenti SET Password = @password WHERE ID = " + decodedToken['id']
+    let query = "UPDATE tb_utenti SET Password = @password WHERE ID = " + decodedToken['userId']
 
     let request = pool.request()
     request.input('password', sql.NVarChar, encodedPsw)

@@ -21,6 +21,7 @@ exports.loadHome = async (req, res) => {
 
             let payload = {
                 user: decodedToken['user'],
+                userId: decodedToken['userId'],
                 terminals: result.recordset,
             } 
             let token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
