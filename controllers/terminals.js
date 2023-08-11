@@ -137,7 +137,7 @@ exports.addTerminalAccess = async (req, res) => {
             return res.status(500).render("serverError")    // Render the error 500 page if the server gives an error
         }
 
-        if (result)
+        if (result.recordset)
             return res.render("manageTerminal", {
                 user: decodedToken['user'],
                 userId: decodedToken['user_id'],
