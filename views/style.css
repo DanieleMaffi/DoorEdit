@@ -14663,6 +14663,10 @@ fieldset:disabled .btn {
   width: 40rem;
 }
 
+.alert-container {
+  width: 40rem;
+}
+
 .idLink {
   text-decoration: none;
 }
