@@ -2,12 +2,12 @@
 
 This is a platform on which users can do different things with the terminals located in the company:
 
-## The Main Pages
-- [DoorEdit](#dooredit)
-  - [The Main Pages](#the-main-pages)
-  - [Anagraphic](#anagraphic)
-  - [Terminals](#terminals)
-    - [Terminal Management](#terminal-management)
+## The Main Page
+- [The Main Page](#the-main-page).
+- [Anagraphic](#anagraphic).
+- [Terminals](#terminals).
+- [Terminal Management](#terminal-management).
+- [Transits](#transits)
 
 ## Anagraphic
 The **anagraphic** can be used to add new poeple to the database and editing their information, there are a few thing possible, including:
@@ -28,3 +28,6 @@ The authorizations associated to the terminal can be accessed from the dedicated
 - Displays all the stores authorizations
 - Give a new authorization to someone
 - Remove an authorizarion
+
+## Transits
+This page just display all the saved transits in a table.
