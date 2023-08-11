@@ -3,11 +3,11 @@
 This is a platform on which users can do different things with the terminals located in the company:
 
 ## The Main Page
-- [The Main Page](#the-main-page).
-- [Anagraphic](#anagraphic).
-- [Terminals](#terminals).
-- [Terminal Management](#terminal-management).
-- [Transits](#transits).
+- [The Main Page](#the-main-page)
+- [Anagraphic](#anagraphic)
+- [Terminals](#terminals)
+- [Terminal Management](#terminal-management)
+- [Transits](#transits)
 
 ## Anagraphic
 The **anagraphic** can be used to add new poeple to the database and editing their information, there are a few thing possible, including:
@@ -31,3 +31,8 @@ The authorizations associated to the terminal can be accessed from the dedicated
 
 ## Transits
 This page just display all the saved transits in a table.
+
+## What I used
+- **HTML**, **CSS**, and **JavaScript** for front-end (bootstrap as CSS framework).
+- **Node.js** with **express** for the back-end, also **ejs** as template engine.
+- **MIcrosoft SQL** as database.
