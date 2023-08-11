@@ -7,7 +7,7 @@ This is a platform on which users can do different things with the terminals loc
 - [Anagraphic](#anagraphic).
 - [Terminals](#terminals).
 - [Terminal Management](#terminal-management).
-- [Transits](#transits)
+- [Transits](#transits).
 
 ## Anagraphic
 The **anagraphic** can be used to add new poeple to the database and editing their information, there are a few thing possible, including:
