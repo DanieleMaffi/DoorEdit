@@ -19,13 +19,13 @@ exports.loadTerminal = async (req, res) => {
 
     try {
         //Looking among the terminals array which has the id corresponding to the uri
-        for (let i = 0; i < terminals.length; i++) 
-        if (terminals[i].rowID == terminalSqlId) {
-            terminalIp = terminals[i].Indirizzo_Terminale
-            terminalId = terminals[i].ID_Terminale
-            terminalName = terminals[i].Nome_Terminale
-            terminalState = terminals[i].Stato
-        }
+        for (let i = 0; i < terminals.length; i++)
+            if (terminals[i].rowID == terminalSqlId) {
+                terminalIp = terminals[i].Indirizzo_Terminale
+                terminalId = terminals[i].ID_Terminale
+                terminalName = terminals[i].Nome_Terminale
+                terminalState = terminals[i].Stato
+            }
         // Creating the object that contains the spicified terminal to edit
         let terminal = {
             id: terminalId,
@@ -59,22 +59,22 @@ exports.manageTerminal = async (req, res) => {
     const anagraphicResult = await pool.query("SELECT * FROM tb_cfg_anagrafica");
     const anagraphic = anagraphicResult.recordset;
 
-    // Getting the authorizations associated to that specific terminal
-    query = "SELECT * FROM vw_autorizzazioni WHERE id_terminale = @id"
-    request = pool.request().input('id', sql.BigInt, id).query(query, (err, result) => {
-        if (err) console.log(err)
+    try {
+        // Getting the authorizations associated to that specific terminal
+        query = "SELECT * FROM vw_autorizzazioni WHERE id_terminale = @id"
+        request = pool.request().input('id', sql.NVarChar, id).query(query, (err, result) => {
+            if (err) console.log(err)
 
-        if (result.rowsAffected == 0)
-            res.status(404).render("notfound")
-        
-        return res.status(200).render("manageTerminal", {
-            user: decodedToken["user"],
-            terminals: decodedToken["terminals"],
-            authorizations: result.recordset,
-            anagraphic: anagraphic,
-            id: id
+            return res.status(200).render("manageTerminal", {
+                user: decodedToken["user"],
+                terminals: decodedToken["terminals"],
+                authorizations: result.recordset,
+                anagraphic: anagraphic,
+                id: id
+            })
         })
-    })
+    }
+    catch (err) { console.log(err); return res.status(404).render("notfound") }
 }
 
 // Updates the information about the terminal
@@ -93,7 +93,7 @@ exports.updateTerminal = async (req, res) => {
     request.input('id', sql.NVarChar, id)
 
     request.query(query, (err, result) => {
-        if(err) console.log(err)
+        if (err) console.log(err)
 
         pool.close()
             .catch((err) => { console.log(err) })
@@ -112,13 +112,13 @@ exports.addTerminalAccess = async (req, res) => {
     request.input('id', sql.NVarChar, id)
     request.input('person', sql.BigInt, person)
 
- 
+
     request.query("INSERT INTO tb_cfg_autorizzazioni (id_terminale, id_anagrafica) VALUES (@id, @person)", (err, result) => {
-        if(err) {
+        if (err) {
             console.log(err)
             return res.status(500).render("serverError")    // Render the error 500 page if the server gives an error
         }
-        
+
         return res.status(200).redirect('/terminals/' + id + '/manage')
     })
 }
@@ -137,12 +137,12 @@ exports.deleteTerminalAccess = async (req, res) => {
 
     // Deleting the access to a terminal, to a specific person
     request.query(query, (err, result) => {
-        if(err) console.log(err)
+        if (err) console.log(err)
 
         pool.close()
             .catch((err) => { console.log(err) })
 
-        return res.status(200).redirect('/terminals/' + terminalId + '/manage') 
+        return res.status(200).redirect('/terminals/' + terminalId + '/manage')
     })
 }
 
@@ -153,41 +153,41 @@ exports.updateTerminalAccess = async (terminalId, anagraphicId) => {
 
     // Adds an authorization only if it's not already present
     let query = "INSERT INTO tb_cfg_autorizzazioni (id_terminale, id_anagrafica) VALUES (@terminal, @anagraphic)"
-    
+
     let request = await pool.request()
     request.input('terminal', sql.NVarChar, terminalId)
     request.input('anagraphic', sql.NVarChar, anagraphicId)
 
     request.query(query, (err, result) => {
-        if(err) console.log(err)
+        if (err) console.log(err)
 
         pool.close()
             .catch((err) => { console.log(err) })
     })
 
     return
-} 
+}
 
 // Removes all the access to a specified person, deleting all the authoriaztion associated to them
 exports.removeAccess = async (id) => {
     const pool = await sql.connect(config)
-    
+
     let request = await pool.request()
     request.input('anagraphic', sql.NVarChar, id)
 
     query = "DELETE FROM tb_cfg_autorizzazioni WHERE id_anagrafica = @anagraphic"
     request.query(query, (err, result) => {
-        if(err) console.log(err)
+        if (err) console.log(err)
 
         pool.close()
             .catch((err) => { console.log(err) })
     })
 
     return
-} 
+}
 
 // Loads the page to add a terminal
-exports.loadNewTerminal = async (req,  res) => {
+exports.loadNewTerminal = async (req, res) => {
     let decodedToken = await promisify(jwt.verify)(req.cookies['token'], process.env.JWT_SECRET)
 
     res.status(200).render('newTerminal', {
@@ -214,10 +214,10 @@ exports.addTerminal = async (req, res) => {
     request.input('ip', sql.NVarChar, ip)
 
     request.query(query, (err, result) => {
-        if(err) console.log(err)
+        if (err) console.log(err)
 
         pool.close()
-            .catch((err => {console.log(err)}))
+            .catch((err => { console.log(err) }))
 
         return res.status(200).redirect('/home')
     })
@@ -238,7 +238,7 @@ exports.deleteTerminal = async (req, res) => {
 
         pool.close()
             .then(() => { console.log("Closed pool") })
-            .catch((err => {console.log(err)}))
+            .catch((err => { console.log(err) }))
 
         return res.status(200).redirect('/home')
     })

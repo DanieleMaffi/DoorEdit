@@ -54,7 +54,7 @@
                 </button>
             </div>
             <div class="p-4 pt-5">
-                <h1><a href="/" class="logo">DoorEdit</a></h1>
+                <h1><a href="#" class="logo">DoorEdit</a></h1>
 
                 <p class="mb-0">
                     <%= user %> &emsp; - &emsp; <a href="/auth/logout">Log out</a>
@@ -167,7 +167,7 @@
     <script>
         function deleteElement(personId, person) {
             if (confirm(`Sei sicuro di voler togliere l'autorizzazione a ${person}?`))
-                window.location.href = "/terminals/" + <%=id %> + "/manage/delete/" + personId
+                window.location.href = "/terminals/" + "<%=id %>" + "/manage/delete/" + personId
         }
 
         function showForm() {
