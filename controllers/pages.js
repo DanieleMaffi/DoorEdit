@@ -43,7 +43,7 @@ exports.loadHome = async (req, res) => {
 // Loads the anagraphic page
 exports.loadAnagraphic = async (req, res) => {
     await sql.connect(config)
-    let query = "SELECT * FROM tb_cfg_anagrafica"
+    let query = "SELECT * FROM tb_cfg_anagrafica ORDER BY Cognome"
 
     let decodedToken = await promisify(jwt.verify)(req.cookies['token'], process.env.JWT_SECRET);
 

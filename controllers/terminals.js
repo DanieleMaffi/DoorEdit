@@ -59,7 +59,7 @@ exports.manageTerminal = async (req, res) => {
     const pool = await sql.connect(config)
 
     // Getting the entire anagraphics
-    const anagraphicResult = await pool.query("SELECT * FROM tb_cfg_anagrafica");
+    const anagraphicResult = await pool.query("SELECT * FROM tb_cfg_anagrafica ORDER BY Cognome");
     const anagraphic = anagraphicResult.recordset;
 
     storedAnagraphic = anagraphic
