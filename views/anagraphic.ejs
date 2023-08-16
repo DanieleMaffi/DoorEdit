@@ -184,6 +184,15 @@
                     person.classList.toggle("hide")
             });
         }
+
+        let searchBox = document.getElementById("searchBox");
+        searchBox.addEventListener("keypress", (event) => {
+            if (event.key === "Enter") {
+                // Cancel the default action, if needed
+                event.preventDefault();
+                search()
+            }
+        })
         
         function resetSearch() {
             let searchBox = document.getElementById("searchBox")
