@@ -57,6 +57,10 @@ exports.addAnagraphic = async (req, res) => {
     let additional = req.body.additional;
     let entrances = req.body.entrances
 
+    // Changing name and last name to uppercase
+    name = name.toUpperCase()
+    surname = surname.toUpperCase()
+
     const pool = await sql.connect(config)
     let query = `INSERT INTO tb_cfg_anagrafica 
         (nome, cognome, abilitato, badge_timbrature, badge_accessi, badge_aggiuntivo) 
