@@ -7,46 +7,48 @@ const config = require('./config.js');
 
 // Loads The anagraphic page
 exports.loadUpdateAnagraphic = async (req, res) => {
-    let decodedToken = await promisify(jwt.verify)(req.cookies['token'], process.env.JWT_SECRET);
-    let id = req.params.id;
-    let authorizations = []
-
     try {
-        const pool = await sql.connect(config)
+        let decodedToken = await promisify(jwt.verify)(req.cookies['token'], process.env.JWT_SECRET);
+        let id = req.params.id;
+        let authorizations = [];
 
-        request = pool.request().input('id', sql.BigInt, id)
-         // Querying all the authorizations associated with the id given in the parameters
-        await request.query("SELECT ID_Terminale FROM tb_cfg_autorizzazioni WHERE id_anagrafica = @id", (err, result) => {
-            if (err) { console.log(err) }
+        const pool = await sql.connect(config);
 
-            for (let i = 0; i < result.recordset.length; i++) {
-                authorizations.push(result.recordset[i].ID_Terminale)
+        try {
+            const request = pool.request().input('id', sql.BigInt, id);
+
+            // Querying all the authorizations associated with the id given in the parameters
+            const authQueryResult = await request.query("SELECT ID_Terminale FROM tb_cfg_autorizzazioni WHERE id_anagrafica = @id");
+
+            for (let i = 0; i < authQueryResult.recordset.length; i++) {
+                authorizations.push(authQueryResult.recordset[i].ID_Terminale);
             }
 
-            pool.close()
-                .catch((err) => { console.log(err) })
-        })
+            // Querying the entire anagraphic
+            const anagraphicQueryResult = await request.query("SELECT * FROM tb_cfg_anagrafica WHERE rowid = @id ORDER BY cognome DESC");
 
-        // Querying the enitere anagraphic
-        request.query("SELECT * FROM tb_cfg_anagrafica WHERE rowid = @id ORDER BY cognome DESC", (err, result) => {
-            if (err) { console.log(err) }
-            
-            if (result.rowsAffected == 0)
-                return res.status(404).render("notfound")
-
-            pool.close()
-                .catch((err) => { console.log(err) })
+            if (anagraphicQueryResult.rowsAffected == 0) {
+                return res.status(404).render("notfound");
+            }
 
             return res.status(200).render("editAnagraphic", {
                 user: decodedToken['user'],
                 terminals: decodedToken['terminals'],
-                anagraphic: result.recordset[0],
+                anagraphic: anagraphicQueryResult.recordset[0],
                 authorizations: authorizations
-            })
-        })
+            });
+        } catch (err) {
+            console.log(err);
+            return res.status(500).render('serverError');
+        } finally {
+            await pool.close();
+        }
+    } catch (err) {
+        console.log(err);
+        return res.status(500).render('serverError');
     }
-    catch (err) { console.log(err) }
-}
+};
+
 
 // Adds an element ot the anagraphic
 exports.addAnagraphic = async (req, res) => {
@@ -61,33 +63,41 @@ exports.addAnagraphic = async (req, res) => {
     name = name.toUpperCase()
     surname = surname.toUpperCase()
 
-    const pool = await sql.connect(config)
-    let query = `INSERT INTO tb_cfg_anagrafica 
+    try {
+        const pool = await sql.connect(config)
+        let query = `INSERT INTO tb_cfg_anagrafica 
         (nome, cognome, abilitato, badge_timbrature, badge_accessi, badge_aggiuntivo) 
         VALUES (@name, @surname, @enabled, @stamps, @entrances, @additional)`
-    let request = pool.request()
-    request.input('name', sql.NVarChar, name)
-    request.input('surname', sql.NVarChar, surname)
-    request.input('enabled', sql.Bit, enabled)
-    request.input('stamps', sql.NVarChar, stamps)
-    request.input('entrances', sql.NVarChar, entrances)
-    request.input('additional', sql.NVarChar, additional)
+        let request = pool.request()
+        request.input('name', sql.NVarChar, name)
+        request.input('surname', sql.NVarChar, surname)
+        request.input('enabled', sql.Bit, enabled)
+        request.input('stamps', sql.NVarChar, stamps)
+        request.input('entrances', sql.NVarChar, entrances)
+        request.input('additional', sql.NVarChar, additional)
 
-    request.query(query, (err, result) => {
-        if (err) { console.log(err) }
-
-        pool.close()
-            .catch((err) => { console.log(err) })
-
-        return res.status(200).redirect('/anagraphic')
-    })
+        try {
+            await request.query(query)
+            return res.status(200).redirect('/anagraphic')
+        }
+        catch (err) {
+            console.log(err)
+            return res.status(500).render('serverError')
+        }
+        finally {
+            pool.close()
+                .catch((err) => { console.log(err) })
+        }
+    }
+    catch (err) {
+        console.log(err)
+        return res.status(500).render('serverError')
+    }
 }
 
 
 // Updates a person in the anagraphic and all their authorizations to each terminal
 exports.updateAnagraphic = async (req, res) => {
-    let decodedToken = await promisify(jwt.verify)(req.cookies['token'], process.env.JWT_SECRET);
-
     let id = req.params.id;
     let name = req.body.name;
     let surname = req.body.surname;
@@ -117,45 +127,62 @@ exports.updateAnagraphic = async (req, res) => {
         terminalsController.removeAccess(id)
 
     // Finally updating the actual person details
-    const pool = await sql.connect(config)
-    let query = "UPDATE tb_cfg_anagrafica SET nome = @name, cognome = @surname, abilitato = @enabled, badge_timbrature = @stamps, badge_accessi = @entrances, badge_Aggiuntivo = @additional WHERE rowid = @id"
-    let request = pool.request()
-    request.input('id', sql.BigInt, id)
-    request.input('name', sql.NVarChar, name)
-    request.input('surname', sql.NVarChar, surname)
-    request.input('enabled', sql.Bit, enabled)
-    request.input('stamps', sql.NVarChar, stamps)
-    request.input('entrances', sql.NVarChar, entrances)
-    request.input('additional', sql.NVarChar, additional)
+    try {
+        const pool = await sql.connect(config)
+        let query = "UPDATE tb_cfg_anagrafica SET nome = @name, cognome = @surname, abilitato = @enabled, badge_timbrature = @stamps, badge_accessi = @entrances, badge_Aggiuntivo = @additional WHERE rowid = @id"
+        let request = pool.request()
+        request.input('id', sql.BigInt, id)
+        request.input('name', sql.NVarChar, name)
+        request.input('surname', sql.NVarChar, surname)
+        request.input('enabled', sql.Bit, enabled)
+        request.input('stamps', sql.NVarChar, stamps)
+        request.input('entrances', sql.NVarChar, entrances)
+        request.input('additional', sql.NVarChar, additional)
 
-    request.query(query, (err, result) => {
-        if (err) { console.log(err) }
-
-        pool.close()
-            .catch((err) => { console.log(err) })
-
-        return res.status(200).redirect('/anagraphic')
-    })
+        try {
+            await request.query(query)
+            return res.status(200).redirect('/anagraphic')
+        }
+        catch (err) {
+            console.log(err)
+            return res.status(500).render('serverError')
+        }
+        finally {
+            pool.close()
+                .catch((err) => { console.log(err) })
+        }
+    }
+    catch (err) {
+        console.log(err)
+        return res.status(500).render('serverError')
+    }
 }
 
 // Deletes a person from the anagraphic
 exports.deleteAnagraphic = async (req, res) => {
     let id = req.params.id;
 
-    const pool = await sql.connect(config)
-    let query = "DELETE tb_cfg_anagrafica WHERE rowid = @id"
-    let request = pool.request()
-    request.input('id', sql.BigInt, id)
+    try {
+        const pool = await sql.connect(config)
+        let query = "DELETE tb_cfg_anagrafica WHERE rowid = @id"
+        let request = pool.request()
+        request.input('id', sql.BigInt, id)
 
-    request.query(query, (err, result) => {
-        if (err) { console.log(err) }
-
-        if (result.rowsAffected == 0)
-                return res.status(404).render("notfound")
-
-        pool.close()
-            .catch((err) => { console.log(err) })
-
-        return res.status(200).redirect('/anagraphic')
-    })
+        try {
+            await request.query(query)
+            return res.status(200).redirect('/anagraphic')
+        }
+        catch (err) {
+            console.log(err)
+            return res.status(500).render('serverError')
+        }
+        finally {
+            pool.close()
+                .catch((err) => { console.log(err) })
+        }
+    }
+    catch (err) {
+        console.log(err)
+        return res.status(500).render('serverError')
+    }
 }
