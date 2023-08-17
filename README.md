@@ -18,7 +18,7 @@ The **anagraphic** can be used to add new poeple to the database and editing the
 
 ## Terminals
 The **terminals** can be accessed from the sidebar, actions are possible, among which:
-- Addinga new terminal.
+- Adding a new terminal.
 - Editing an existing terminal.
 - Deleting a terminal.
 - Accessing the authorizations associated to a terminal.
