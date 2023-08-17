@@ -12257,5 +12257,6 @@ input:checked + .slider:before {
   .big-logo {
     rotate: 90deg;
     font-size: 50px;
+    letter-spacing: 40px;
   }
 }

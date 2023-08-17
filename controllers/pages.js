@@ -72,7 +72,7 @@ exports.loadTransits = async (req, res) => {
     // Also excracting separately day, month and year for ordering purposes
     let query = `SELECT CONVERT(VARCHAR, data, 105) as Data, CONVERT(VARCHAR, data, 108) as Time, Nome, Cognome, Badge, Terminale, Esito 
                 FROM tb_transiti 
-                ORDER BY YEAR(data) DESC, MONTH(data) DESC, DAY(data) DESC, Time DESC`
+                ORDER BY rowid DESC`
 
     let decodedToken = await promisify(jwt.verify)(req.cookies['token'], process.env.JWT_SECRET);
 
