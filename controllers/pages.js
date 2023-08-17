@@ -92,3 +92,26 @@ exports.loadTransits = async (req, res) => {
     }
     catch (err) { console.log(err) }
 }
+
+exports.loadEmails = async (req, res) => {
+    let decodedToken = await promisify(jwt.verify)(req.cookies['token'], process.env.JWT_SECRET);
+
+    await sql.connect(config)
+
+    let result
+
+    try {
+        result = await sql.query("SELECT * FROM tb_cfg_mail");
+    }
+    catch(err) {
+        console.log(err)
+    }
+    
+    const emails = result.recordset;
+
+    return res.status(200).render("emails", {
+        user: decodedToken["user"],
+        terminals: decodedToken["terminals"],
+        emails: emails
+    })
+}

@@ -5,11 +5,11 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/css/style.css">
     <link href="/src/fonts.googleapis.com_css_family=Poppins_300,400,500,600,700,800,900.css" rel="stylesheet">
     <link rel="stylesheet" href="/src/stackpath.bootstrapcdn.com_font-awesome_4.7.0_css_font-awesome.min.css">
+    <link rel="stylesheet" href="/css/style.css">
     <link rel="icon" type="images/x-icon" href="/src/minilogo.png" />
-    <title>Mofica anagrafica</title>
+    <title>Aggiungi terminale</title>
 </head>
 
 <body>
@@ -58,13 +58,13 @@
                             <li>
                                 <a href="/terminals/add">Aggiungi un terminale</a>
                             </li>
+                            <li>
+                                <a href="/emails">Impostazioni Notifiche</a>
+                            </li>
                         </ul>
                     </li>
                     <li>
                         <a href="/transits">Transiti</a>
-                    </li>
-                    <li>
-                        <a href="/emails">Impostazioni Notifiche</a>
                     </li>
                 </ul>
                 <div class="footer">
@@ -80,62 +80,18 @@
         <div id="content" class="p-4 p-md-5 pt-5">
             <div>
                 <div style="display: flex; flex-direction: row; align-items: end; flex-wrap: wrap; justify-content: space-between;">
-                    <h1 class="mt-3">Modifica risorsa <%=anagraphic.rowID%></h1> 
+                    <h1 class="mt-3">Nuova Email</h1> 
                 </div>
-                <form action="/anagraphic/<%=anagraphic.rowID%>/update/submit" method="POST">
-                    <div class="mb-4 d-flex flex-wrap">
-                        <h4 class="mr-3"><%=anagraphic.Nome%> <%=anagraphic.Cognome%></h4>
-                        <label class="switch">
-                            <input type="checkbox" name="enabled" id="enabled">
-                            <span class="slider round"></span>
-                        </label>
-                    </div>
+                <form action="/emails/add/submit" method="POST">
+                    <h4 class="mb-4">iserisci la nuova email a cui vuoi mandare le notifiche.</h4>
                     <div class="mb-4">
-                        <label for="name" class="form-label">Nome</label>
-                        <input type="text" placeholder="<%=anagraphic.Nome%>" value="<%=anagraphic.Nome%>" class="form-control" id="name" name="name">
+                        <label for="email" class="form-label">Indirizzo</label>
+                        <input type="email" placeholder="esempio@email.com" class="form-control" id="email" name="email">
                     </div>
-                    <div class="mb-4">
-                        <label for="surname" class="form-label">Cognome</label>
-                        <input type="text" placeholder="<%=anagraphic.Cognome%>" value="<%=anagraphic.Cognome%>" class="form-control" id="surname" name="surname">
-                    </div>
-                    <div class="mb-4">
-                        <label for="stamps" class="form-label">Badge timbrature</label>
-                        <input type="text" placeholder="<%=anagraphic.Badge_Timbrature%>" value="<%=anagraphic.Badge_Timbrature%>" class="form-control" id="stamps" name="stamps">
-                    </div>
-                    <div class="mb-4">
-                        <label for="entrances" class="form-label">Badge accessi</label>
-                        <input type="text" placeholder="<%=anagraphic.Badge_Accessi%>" value="<%=anagraphic.Badge_Accessi%>" class="form-control" id="entrances" name="entrances">
-                    </div>
-                    <div class="mb-5">
-                        <label for="additional" class="form-label">Badge aggiuntivo</label>
-                        <input type="text" placeholder="<%=anagraphic.Badge_Aggiuntivo%>" value="<%=anagraphic.Badge_Aggiuntivo%>" class="form-control" id="additional" name="additional">
-                    </div>
-                    <h4 class="mb-4">Terminali associati</h4>
-                    <div class="d-flex flex-wrap">
-                        <% for (i = 0; i < terminals.length; i++) { %>
-                            <div class="d-flex flex-wrap mr-5 pr-1 mb-4">
-                                <label class="switch mr-1">
-                                    <% if (authorizations.includes(terminals[i].ID_Terminale)) { %>
-                                        <input type="checkbox" name="singleEnabled" value="<%=terminals[i].ID_Terminale%>" checked>
-                                    <% } else { %>
-                                        <input type="checkbox" name="singleEnabled" value="<%=terminals[i].ID_Terminale%>">
-                                    <% } %> 
-                                    <span class="slider round"></span>
-                                </label>
-                                <div style="position: relative; top: 5px;">
-                                    <label style="text-align: center; margin: 0;"><%=terminals[i].Nome_Terminale%> <%=terminals[i].ID_Terminale%></label>
-                                </div>
-                            </div>
-                        <% } %>
-                    </div>
-                    <button type="submit" class="btn btn-primary mt-3">Aggiorna</button>
+                    <button type="submit" class="btn btn-primary">Invia</button>
                 </form>
             </div>
         </div>
-        <script>
-            let chkEnabled = document.getElementById('enabled')
-            chkEnabled.checked = <%=anagraphic.Abilitato%>
-        </script>
         <script src="/js/jquery.min.js"></script>
         <script src="/js/popper.js"></script>
         <script src="/js/bootstrap.min.js"></script>

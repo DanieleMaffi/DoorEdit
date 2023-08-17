@@ -1,4 +1,4 @@
-// This is jsut the config class
+// This is just the config class
 
 let config = {
     user: process.env.DB_USER,

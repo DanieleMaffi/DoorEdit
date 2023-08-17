@@ -9,14 +9,11 @@
     <link href="/src/fonts.googleapis.com_css_family=Poppins_300,400,500,600,700,800,900.css" rel="stylesheet">
     <link rel="stylesheet" href="/src/stackpath.bootstrapcdn.com_font-awesome_4.7.0_css_font-awesome.min.css">
     <link rel="stylesheet" href="css/style.css">
-    <title>Transiti</title>
+    <title>Home</title>
 </head>
 
 <body>
-    <a class="circle-wrap show-arrow" href="#" id="arrow">
-        <i class="fa fa-arrow-up"></i>
-    </a>
-    
+
     <div class="wrapper d-flex align-items-stretch">
         <nav id="sidebar">
             <div class="custom-menu">
@@ -26,7 +23,7 @@
                 </button>
             </div>
             <div class="p-4 pt-5">
-                <h1><a href="#" class="logo">DoorEdit</a></h1>
+                <h1><a href="/" class="logo">DoorEdit</a></h1>
 
                 <p class="mb-0">
                     <%= user %> &emsp; - &emsp; <a href="/auth/logout">Log out</a>
@@ -87,50 +84,62 @@
 
         <!-- Page Content  -->
         <div id="content" class="p-4 p-md-5 pt-5">
-
-            <h1 class="mt-3">Transiti</h1>
-            <h5 class="mb-5">Visualizzazione dei transiti di ciascun terminale, <span>autorizzati</span> e <span style="color: rgb(240, 88, 116);">respinti</span>.</h5>
-            <div class="d-flex mb-2">
-
-                <div class="form-inline justify-content-end">
-                    <a class="btn btn-outline-secondary my-2 my-sm-0 mr-2" style="cursor: pointer;" href="/transits">Aggiorna</i></a>
-                </div>
-            </div>
+            <h1 class="mt-3">Impostazioni Notifiche</h1>
+            <h5 class="mb-5">Aggiungi o elimina gli indirizzi a cui mandare notifiche.</h5>
             <div class="table-responsive">
-            <table class="table table-hover table-dark">
-                <thead>
-                    <tr>
-                        <th scope="col">Data</th>
-                        <th scope="col">Badge</th>
-                        <th scope="col">Nome</th>
-                        <th scope="col">Cognome</th>
-                        <th scope="col">Terminale</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <% for (let i = 0; i < transits.length; i++) { %>
-                        <% if (transits[i].Esito)  { %>
-                            <tr>
-                        <% } else { %>
-                            <tr class="bg-danger">
-                        <% } %>
-                            <th class="align-middle" scope="row"><%=transits[i].Data%> &emsp; - &emsp; <%=transits[i].Time%></th>
-                            <td class="align-middle"><%=transits[i].Badge%></td>
-                            <td class="align-middle"><%=transits[i].Nome%></td>
-                            <td class="align-middle"><%=transits[i].Cognome%></td>
-                            <td class="align-middle"><%=transits[i].Terminale%></td>
+                <table class="table table-hover table-dark">
+                    <thead>
+                        <tr>
+                            <th scope="col">Indirizzo</th>
+                            <th scope="col">Eliminazione</th>
                         </tr>
-                    <% } %>
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        <% for (let i=0; i < emails.length; i++) { %>
+                            <tr>
+                                <td class="align-middle">
+                                    <%=emails[i].eMail%>
+                                </td>
+                                <td class="align-middle">
+                                    <button style="cursor: pointer;" class="btn btn-danger"
+                                        onclick="deleteElement('<%=emails[i].ID%>')">
+                                        <i class="fa fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <% } %>
+                                <tr>
+                                    <td colspan="10">
+                                        <a style="display: flex; justify-content: center;" href="#"
+                                            onclick="showForm()">Aggiungi indirizzo</a>
+                                    </td>
+                                </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
-        </div>
-    </div>
-    <script src="js/jquery.min.js"></script>
-    <script src="js/popper.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/main.js"></script>
-    <script src="js/arrow.js"></script>
+
+</body>
+
+</html>
+
+</div>
+</div>
+<script>
+    function deleteElement(id) {
+            if (confirm(`Sei sicuro di voler mandare più notifiche a questo indirizzo?`))
+                window.location.href = "/emails/" + id + "/delete"
+        }
+
+        function showForm() {
+            window.location.href = "/emails/add"
+        }
+</script>
+<script src="js/jquery.min.js"></script>
+<script src="js/popper.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/main.js"></script>
+
 </body>
 
 </html>

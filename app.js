@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
-const dotenv = require("dotenv").config();
-var cookies = require("cookie-parser");
+require("dotenv").config();
+const cookies = require("cookie-parser");
 
 // Setting up the middlewares
 app.use(express.static("views"));
@@ -19,6 +19,7 @@ console.log(`\r\n__\/\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\________\/\\\\\\\\\\_________
 app.use('/auth', require('./routes/auth'));
 app.use('/terminals', require('./routes/terminals'));
 app.use('/anagraphic', require('./routes/anagraphic'));
+app.use('/emails', require('./routes/emails'));
 app.use('/', require('./routes/pages'));
 
 app.listen(80)

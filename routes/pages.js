@@ -13,6 +13,8 @@ router.get('/anagraphic', authController.isLoggedIn, pagesController.loadAnagrap
 
 router.get('/transits', authController.isLoggedIn, pagesController.loadTransits)
 
+router.get('/emails', authController.isLoggedIn, pagesController.loadEmails)
+
 router.get('*', (req, res) => {res.status(404).render('notfound')})
 
 module.exports = router;

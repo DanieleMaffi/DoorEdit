@@ -72,6 +72,9 @@ exports.manageTerminal = async (req, res) => {
 
             storedAuthorizations = result.recordset
 
+            pool.close()
+                .catch(err => { console.log(err) })
+
             return res.status(200).render("manageTerminal", {
                 user: decodedToken["user"],
                 terminals: decodedToken["terminals"],
