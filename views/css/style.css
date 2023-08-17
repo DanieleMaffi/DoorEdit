@@ -12127,8 +12127,25 @@ input:checked + .slider:before {
   cursor: pointer;
 }
 
+.fixed-circle-wrap {
+  border: 2px solid rgb(255, 255, 255, 0.6);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #222;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
 .circle-wrap i {
   font-size: 25px;
+}
+
+.fixed-circle-wrap i {
+  font-size: 20px;
 }
 
 .popup {
