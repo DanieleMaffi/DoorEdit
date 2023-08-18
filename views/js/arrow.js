@@ -7,7 +7,6 @@ function checkScroll() {
     if (scrollPosition > triggerPosition) {
         arrow.classList.remove("show-arrow");
     }
-    console.log(scrollPosition)
 }
 
 window.addEventListener("scroll", checkScroll);

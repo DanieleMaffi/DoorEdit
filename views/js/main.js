@@ -18,6 +18,16 @@
 	};
 	fullHeight();
 
+	// Constantly checking the width
+	// This will ensure that tha sidebar automatically closes when the screen shrinks
+	$(window).resize(function() {
+        // Get the updated window width
+        var newWidth = $(window).width();
+
+        if (newWidth <= 991.98)
+			$('#sidebar').removeClass('active');
+    });
+
 	$('#sidebarCollapse').on('click', function () {
 		$('#sidebar').toggleClass('active');
 

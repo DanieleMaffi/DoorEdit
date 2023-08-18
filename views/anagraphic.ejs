@@ -94,16 +94,20 @@
             <div class="d-flex mb-2">
 
                 <div class="form-inline justify-content-end">
-                    <input class="form-control mr-2" id="searchBox" type="search" placeholder="Cerca" aria-label="Cerca">
-                    <button class="btn btn-outline-primary my-2 my-sm-0 mr-2" onclick="search()"><i class="fa fa-search"></i></button>
-                    <button class="btn btn-outline-danger my-2 my-sm-0 mr-2" onclick="resetSearch()">Reset Ricerca</button>
-                    <a style="display: flex; justify-content: center;" class="btn btn-outline-primary my-2 my-sm-0" href="/anagraphic/add">Aggiungi un elemento</a>
+                    <input class="form-control mr-2" id="searchBox" type="search" placeholder="Cerca"
+                        aria-label="Cerca">
+                    <button class="btn btn-outline-primary my-2 my-sm-0 mr-2" onclick="search()"><i
+                            class="fa fa-search"></i></button>
+                    <button class="btn btn-outline-danger my-2 my-sm-0 mr-2" onclick="resetSearch()">Reset
+                        Ricerca</button>
+                    <a style="display: flex; justify-content: center;" class="btn btn-outline-primary my-2 my-sm-0"
+                        href="/anagraphic/add">Aggiungi un elemento</a>
                 </div>
             </div>
 
 
             <div class="table-responsive">
-                <table class="table table-hover table-dark">
+                <table class="table table-hover table-dark" id="anagraphicTable">
                     <thead>
                         <tr>
                             <th scope="col">#</th>
@@ -197,7 +201,7 @@
                 search()
             }
         })
-        
+
         function resetSearch() {
             let searchBox = document.getElementById("searchBox")
             searchBox.value = ""
