@@ -12154,7 +12154,6 @@ input:checked + .slider:before {
 }
 
 .popup {
-  animation: backInLeft 1s;
   visibility: hidden;
   position: absolute;
   top: 30%;
@@ -12168,27 +12167,28 @@ input:checked + .slider:before {
 
 .show {
   visibility: visible;
+  animation: backInLeft 0.5s;
 }
 
 @keyframes backInLeft {
   0% {
-    transform: translateX(-2000px) scale(0.7);
-    opacity: 0.8;
+    transform: translateY(100px) scale(0.7);
+    opacity: 0;
   }
 
-  80% {
-    transform: translateX(0px) scale(0.7);
-    opacity: 0.8;
-  }
+  /*75% {
+    
+    opacity: 0.5;
+  }*/
 
   100% {
-    transform: scale(1);
+    transform: translateY(0px) scale(1);
     opacity: 1;
   }
 }
 
 .blur {
-  transition: 0.2s;
+  transition: 0.5s;
   filter: blur(30px);
   pointer-events: none;
   user-select: none;
