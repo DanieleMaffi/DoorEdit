@@ -11801,6 +11801,7 @@ h5,
 #sidebar h1 {
   margin-bottom: 20px;
   font-weight: 700;
+  overflow: hidden;
 }
 
 #sidebar h1 .logo {
