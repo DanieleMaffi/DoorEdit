@@ -12165,37 +12165,20 @@ input:checked + .slider:before {
   width: 40rem;
 }
 
-.show {
+.show-popup {
   visibility: visible;
-  animation: backInLeft 0.5s;
-}
-
-@keyframes backInLeft {
-  0% {
-    transform: translateY(100px) scale(0.7);
-    opacity: 0;
-  }
-
-  /*75% {
-    
-    opacity: 0.5;
-  }*/
-
-  100% {
-    transform: translateY(0px) scale(1);
-    opacity: 1;
-  }
+  animation: popup 0.3s;
 }
 
 .blur {
-  transition: 0.5s;
+  transition: 0.3s;
   filter: blur(30px);
   pointer-events: none;
   user-select: none;
 }
 
 .unblur {
-  transition: 0.2s;
+  transition: 0.3s;
   filter: blur(0); /* Removes the blur effect */
 }
 
@@ -12260,6 +12243,23 @@ input:checked + .slider:before {
 @keyframes animated-cursor{
   from{border-right-color: #666}
   to{border-right-color: transparent;}
+}
+
+@keyframes popup {
+  0% {
+    transform: translateY(100px) scale(0.7);
+    opacity: 0;
+  }
+
+  /*75% {
+    
+    opacity: 0.5;
+  }*/
+
+  100% {
+    transform: translateY(0px) scale(1);
+    opacity: 1;
+  }
 }
 
 @media screen and (max-width:1400px) {
