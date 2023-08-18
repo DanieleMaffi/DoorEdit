@@ -9,6 +9,7 @@
     <link href="/src/fonts.googleapis.com_css_family=Poppins_300,400,500,600,700,800,900.css" rel="stylesheet">
     <link rel="stylesheet" href="/src/stackpath.bootstrapcdn.com_font-awesome_4.7.0_css_font-awesome.min.css">
     <link rel="icon" type="images/x-icon" href="/src/minilogo.png" />
+    <script src="js/sidebarLoad.js"></script>
     <title>Modifica anagrafica</title>
 </head>
 
@@ -79,12 +80,12 @@
         </nav>
         <div id="content" class="p-4 p-md-5 pt-5">
             <div>
-                <div style="display: flex; align-items: center;">
-                    <a class="fixed-circle-wrap" href="/anagraphic"><i class="fa fa-arrow-left"></i></a>
-                    <a href="/anagraphic">Torna all'anagrafica</a>
-                </div>
                 <div style="display: flex; flex-direction: row; align-items: end; flex-wrap: wrap; justify-content: space-between;">
                     <h1 class="mt-3">Modifica risorsa <%=anagraphic.rowID%></h1> 
+                    <div style="display: flex; align-items: center;">
+                        <a class="fixed-circle-wrap" href="/anagraphic"><i class="fa fa-arrow-left"></i></a>
+                        <a href="/anagraphic" style="text-align: left; color: rgba(255, 255, 255, 0.5) !important;">Torna <br> all'anagrafica</a>
+                    </div>
                 </div>
                 <form action="/anagraphic/<%=anagraphic.rowID%>/update/submit" method="POST">
                     <div class="mb-4 d-flex flex-wrap">

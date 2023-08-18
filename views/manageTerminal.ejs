@@ -12,6 +12,7 @@
     <script>if(<%=message%>)
         alert("Hai già autorizzato questa persona!")
     </script>
+    <script src="js/sidebarLoad.js"></script>
     <title>Autorizzazioni</title>
 </head>
 
@@ -119,7 +120,13 @@
         <!-- Page Content  -->
         <div id="content" class="p-4 p-md-5 pt-5">
 
-            <h1 class="mt-3">Autorizzazioni</h1>
+            <div style="display: flex; flex-direction: row; align-items: end; flex-wrap: wrap; justify-content: space-between;">
+                <h1 class="mt-3">Autorizzazioni</h1>
+                <div style="display: flex; align-items: center;">
+                    <a class="fixed-circle-wrap" id="backArr" href="#"><i class="fa fa-arrow-left"></i></a>
+                    <a id="backText" style="text-align: left; cursor: pointer;">Torna <br> al terminale</a>
+                </div>
+            </div>
             <h5 class="mb-5">Aggiungi o elimina le autorizzazioni del terminale <span style="font-weight: 700;"><%=id%></span>.</h5>
             <div class="table-responsive">
                 <table class="table table-hover table-dark">
@@ -184,6 +191,17 @@
             blur.classList.toggle("blur")
             blur.classList.toggle("unblur")
         }
+
+        let backArr = document.getElementById("backArr")
+        let backText = document.getElementById("backText")
+
+        backArr.addEventListener("click", function (event) {
+            window.history.back();
+        })
+        backText.addEventListener("click", function (event) {
+            window.history.back();
+        })
+
     </script>
     <script src="/js/jquery.min.js"></script>
     <script src="/js/popper.js"></script>

@@ -73,7 +73,7 @@ exports.login = async (req, res) => {
             console.log(err)
             return res.status(500).render('serverError')
         }
-        finally {
+        finally {   // This is executed either way
             pool.close()
                 .catch((err) => { console.log(err) })
         }

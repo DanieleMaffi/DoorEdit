@@ -12140,6 +12140,10 @@ input:checked + .slider:before {
   margin-right: 10px;
 }
 
+.fixed-circle-wrap:hover {
+  border: 2px solid rgb(255, 255, 255, 0.8);
+}
+
 .circle-wrap i {
   font-size: 25px;
 }
