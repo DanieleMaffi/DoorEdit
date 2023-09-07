@@ -1,1 +1,2 @@
-views/style.css -linguist-vendored
+views/style.css linguist-vendored
+views/css/* linguist-vendored
