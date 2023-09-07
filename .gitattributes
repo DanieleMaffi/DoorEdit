@@ -1,2 +1,4 @@
-
+views/style.css linguist-vendored
 views/css/* linguist-vendored
+views/js/bootstrap.min.js linguist-vendored
+views/js/jquery.min.js linguist-vendored
